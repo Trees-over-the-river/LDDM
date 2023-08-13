@@ -8,7 +8,16 @@ class Login extends StatelessWidget {
   void _validateForm(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logado com sucesso')),
+        const SnackBar(
+          content: Text("Logado!"),
+        ),
+      );
+
+      // Go to home page
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/',
+        (route) => false,
       );
     }
   }
@@ -24,11 +33,19 @@ class Login extends StatelessWidget {
         body: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           alignment: Alignment.center,
-          child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
+          child: SingleChildScrollView(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.primaryContainer,
+              ),
+              constraints: const BoxConstraints(maxWidth: 800),
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const FlutterLogo(
                       size: 150,
@@ -74,7 +91,9 @@ class Login extends StatelessWidget {
                     SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                   ],
                 ),
-              )),
+              ),
+            ),
+          ),
         ));
   }
 }
