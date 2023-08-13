@@ -56,13 +56,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FlutterLogo(
-              size: 150,
-              curve: Curves.easeInOut,
-              duration: const Duration(seconds: 1),
-              style: _initialized
-                  ? FlutterLogoStyle.markOnly
-                  : FlutterLogoStyle.horizontal,
+            Hero(
+              tag: 'Logo',
+              child: FlutterLogo(
+                size: 150,
+                curve: Curves.easeInOut,
+                duration: const Duration(seconds: 1),
+                style: _initialized
+                    ? FlutterLogoStyle.markOnly
+                    : FlutterLogoStyle.horizontal,
+              ),
             ),
             SizedBox.fromSize(size: const Size.fromHeight(50)),
             ElevatedButton(

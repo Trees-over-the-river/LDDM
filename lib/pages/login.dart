@@ -47,8 +47,12 @@ class Login extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const FlutterLogo(
-                      size: 150,
+                    const Hero(
+                      tag: 'Logo',
+                      child: FlutterLogo(
+                        size: 150,
+                        style: FlutterLogoStyle.markOnly,
+                      ),
                     ),
                     SizedBox.fromSize(size: const Size.fromHeight(20)),
                     TextFormField(
