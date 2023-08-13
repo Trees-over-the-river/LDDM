@@ -50,17 +50,18 @@ class _MyHomePageState extends State<MyHomePage> {
               tag: 'Logo',
               child: FlutterLogo(
                 size: 150,
-                curve: Curves.easeInOut,
-                duration: Duration(seconds: 1),
                 style: FlutterLogoStyle.markOnly,
               ),
             ),
             SizedBox.fromSize(size: const Size.fromHeight(50)),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/login');
-              },
-              child: const Text('Login'),
+            Hero(
+              tag: 'LoginButton',
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+                child: const Text('Entrar'),
+              ),
             ),
             SizedBox.fromSize(size: const Size.fromHeight(20)),
           ],

@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
                 const Hero(
                   tag: 'Logo',
                   child: FlutterLogo(
-                    size: 150,
+                    size: 75,
                     style: FlutterLogoStyle.markOnly,
                   ),
                 ),
@@ -119,8 +119,6 @@ class _LoginState extends State<Login> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Informe uma senha';
-                            } else if (value.length < 6) {
-                              return 'Senha deve ter no mínimo 6 caracteres';
                             } else if (value != _passwordController.text) {
                               return 'Senhas não conferem';
                             }
@@ -149,9 +147,12 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: () => _validateForm(context),
-                            child: Text(_signUp ? 'Cadastrar' : 'Entrar'),
+                          Hero(
+                            tag: 'LoginButton',
+                            child: ElevatedButton(
+                              onPressed: () => _validateForm(context),
+                              child: Text(_signUp ? 'Cadastrar' : 'Entrar'),
+                            ),
                           ),
                         ],
                       ),
