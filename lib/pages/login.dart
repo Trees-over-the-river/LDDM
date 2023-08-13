@@ -35,6 +35,25 @@ class _LoginState extends State<Login> {
     }
   }
 
+  void _setSignup(bool value) {
+    setState(() {
+      _signUp = value;
+    });
+  }
+
+  void _validateSignup(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Cadastrado!"),
+        ),
+      );
+
+      // Toggle to login
+      _setSignup(false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,33 +130,34 @@ class _LoginState extends State<Login> {
                         firstChild: const SizedBox.shrink(),
                         sizeCurve: Curves.easeInOut,
                         duration: const Duration(milliseconds: 300),
-                        secondChild: TextFormField(
-                          decoration: const InputDecoration(
-                            hintText: 'Confirme sua senha',
-                          ),
-                          keyboardType: TextInputType.visiblePassword,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Informe uma senha';
-                            } else if (value != _passwordController.text) {
-                              return 'Senhas não conferem';
-                            }
-                            return null;
-                          },
-                          onFieldSubmitted: (_) => _validateForm(context),
-                          obscureText: true,
-                        ),
+                        secondChild: Builder(
+                            builder: (context) => _signUp
+                                ? TextFormField(
+                                    decoration: const InputDecoration(
+                                      hintText: 'Confirme sua senha',
+                                    ),
+                                    keyboardType: TextInputType.visiblePassword,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Informe uma senha';
+                                      } else if (value !=
+                                          _passwordController.text) {
+                                        return 'Senhas não conferem';
+                                      }
+                                      return null;
+                                    },
+                                    onFieldSubmitted: (_) =>
+                                        _validateForm(context),
+                                    obscureText: true,
+                                  )
+                                : const SizedBox.shrink()),
                       ),
                       SizedBox.fromSize(size: const Size.fromHeight(20)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _signUp = !_signUp;
-                              });
-                            },
+                            onPressed: () => _setSignup(!_signUp),
                             child: Text(
                               _signUp
                                   ? 'Já tem conta? Login'
@@ -150,7 +170,9 @@ class _LoginState extends State<Login> {
                           Hero(
                             tag: 'LoginButton',
                             child: ElevatedButton(
-                              onPressed: () => _validateForm(context),
+                              onPressed: () => _signUp
+                                  ? _validateSignup(context)
+                                  : _validateForm(context),
                               child: Text(_signUp ? 'Cadastrar' : 'Entrar'),
                             ),
                           ),
