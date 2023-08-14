@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 
 class ListItem extends StatefulWidget {
   const ListItem({
-    Key? key,
+    required Key key,
     required this.title,
     this.description,
     this.onDelete,
+    this.onEdit,
+    this.onCheck,
   }) : super(key: key);
 
   final String title;
   final String? description;
-  final void Function()? onDelete;
+  final void Function()? onDelete; //Called when swiped left
+  final void Function()? onEdit; //Called when clicked
+  final void Function()?
+      onCheck; //Called when checkbox is checked or swiped right
 
   @override
   State<ListItem> createState() => _ListItemState();
@@ -21,51 +26,55 @@ class _ListItemState extends State<ListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)),
-        borderRadius: BorderRadius.circular(8),
-        color: _checked
-            ? Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
-            : null,
+    return Dismissible(
+      key: widget.key!,
+      onDismissed: (direction) {
+        if (direction == DismissDirection.startToEnd) {
+          setState(() {
+            _checked = !_checked;
+          });
+          widget.onCheck?.call();
+        } else if (direction == DismissDirection.endToStart) {
+          widget.onDelete?.call();
+        }
+      },
+      background: Container(
+        color: Colors.green,
+        child: const Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: Icon(Icons.check),
+          ),
+        ),
       ),
-      child: Row(
-        children: [
-          Checkbox(
-            value: _checked,
-            onChanged: (value) {
-              setState(() {
-                _checked = value!;
-              });
-            },
+      secondaryBackground: Container(
+        color: Colors.red,
+        child: const Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: EdgeInsets.only(right: 20),
+            child: Icon(Icons.delete),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    fontStyle: _checked ? FontStyle.italic : null,
-                    decoration: _checked ? TextDecoration.lineThrough : null,
-                  ),
-                ),
-                Text(
-                  widget.description ?? "",
-                  style: TextStyle(
-                    fontSize: 14,
-                    decoration: _checked ? TextDecoration.lineThrough : null,
-                  ),
-                ),
-              ],
+        ),
+      ),
+      child: ListTile(
+        title: Text(widget.title),
+        subtitle: widget.description != null ? Text(widget.description!) : null,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Checkbox(
+              value: _checked,
+              onChanged: (value) {
+                setState(() {
+                  _checked = value!;
+                });
+                widget.onCheck?.call();
+              },
             ),
-          ),
-          IconButton(onPressed: widget.onDelete, icon: const Icon(Icons.delete))
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pricely/pages/items.dart';
 import 'package:pricely/pages/login.dart';
 
 void main() {
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/login': (context) => const Login(),
+        '/items': (context) => const Items(),
       },
       home: const MyHomePage(title: 'Pricely'),
     );
@@ -54,14 +56,25 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             SizedBox.fromSize(size: const Size.fromHeight(50)),
-            Hero(
-              tag: 'LoginButton',
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: const Text('Entrar'),
-              ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/items');
+                  },
+                  child: const Text('Items'),
+                ),
+                const Spacer(),
+                Hero(
+                  tag: 'LoginButton',
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: const Text('Entrar'),
+                  ),
+                ),
+              ],
             ),
             SizedBox.fromSize(size: const Size.fromHeight(20)),
           ],
