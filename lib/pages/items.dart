@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pricely/widget/list_item.dart';
+import 'package:pricely/widget/item_widget.dart';
 
 class Items extends StatefulWidget {
   const Items({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class _ItemsState extends State<Items> {
       body: Center(
         child: ListView.builder(
           itemBuilder: (context, index) {
-            return ListItem(
+            return ItemWidget(
               key: ValueKey(index),
               title: 'Item $index',
               description: 'Description $index',
