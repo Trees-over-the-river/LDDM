@@ -16,21 +16,7 @@ class _ItemsState extends State<Items> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Items'),
       ),
-      body: Center(
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            return ItemWidget(
-              key: ValueKey(index),
-              title: 'Item $index',
-              description: 'Description $index',
-              onEdit: () {},
-              onDelete: () {},
-              onCheck: () {},
-            );
-          },
-          itemCount: 10,
-        ),
-      ),
+      body: Center(child: Text('To be implemented')),
     );
   }
 }
