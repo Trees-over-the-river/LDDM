@@ -1,9 +1,9 @@
-import 'dart:io';
+import 'package:flutter/material.dart';
 
 class Item {
   final String name;
   final String description;
-  final File image;
+  final Image image;
   final String category;
   final String id;
   final int amount;
@@ -37,5 +37,22 @@ enum AmountUnit {
   g,
   l,
   ml,
-  units,
+  none,
+}
+
+extension AmountUnitExtension on AmountUnit {
+  String get name {
+    switch (this) {
+      case AmountUnit.kg:
+        return 'kg';
+      case AmountUnit.g:
+        return 'g';
+      case AmountUnit.l:
+        return 'l';
+      case AmountUnit.ml:
+        return 'ml';
+      case AmountUnit.none:
+        return 'units';
+    }
+  }
 }

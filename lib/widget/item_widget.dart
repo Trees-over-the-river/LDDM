@@ -73,10 +73,10 @@ class _ItemWidgetState extends State<ItemWidget> {
       ),
       child: ListTile(
         onTap: _onTap,
-        leading: Image.file(widget.item.image),
+        leading: widget.item.image,
         title: Text(widget.item.name),
         subtitle: Text(widget.item.description),
-        trailing: Text('${widget.item.amount} ${widget.item.amountUnit}'),
+        trailing: Text('${widget.item.amount} ${widget.item.amountUnit.name}'),
         selected: _checked,
       ),
     );

@@ -20,11 +20,11 @@ class _ItemPageState extends State<ItemPage> {
       ),
       body: Column(
         children: [
-          Image.file(widget.item.image),
+          widget.item.image,
           Text(widget.item.description),
           Text(widget.item.category),
           Text(widget.item.amount.toString()),
-          Text(widget.item.amountUnit.toString()),
+          Text(widget.item.amountUnit.name),
         ],
       ),
     );
