@@ -33,8 +33,15 @@ class _ItemsState extends State<Items> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Items'),
       ),
-      body: ListView(
+      body: ReorderableListView(
           cacheExtent: 300,
+          onReorder: (oldIndex, newIndex) => setState(() {
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                }
+                final item = items.removeAt(oldIndex);
+                items.insert(newIndex, item);
+              }),
           children: items
               .map(
                 (item) => ItemWidget(
