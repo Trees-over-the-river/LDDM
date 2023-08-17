@@ -20,9 +20,9 @@ class _ItemPageState extends State<ItemPage> {
       ),
       body: Column(
         children: [
-          widget.item.image,
-          Text(widget.item.description),
-          Text(widget.item.category),
+          widget.item.image ?? const SizedBox(),
+          Text(widget.item.description ?? ''),
+          Text(widget.item.category.join(' | ')),
           Text(widget.item.amount.toString()),
           Text(widget.item.amountUnit.name),
         ],

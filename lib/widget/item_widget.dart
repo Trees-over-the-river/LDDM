@@ -73,9 +73,15 @@ class _ItemWidgetState extends State<ItemWidget> {
       ),
       child: ListTile(
         onTap: _onTap,
-        leading: widget.item.image,
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: SizedBox(
+              height: 50,
+              width: 50,
+              child: widget.item.image ?? const Icon(Icons.image)),
+        ),
         title: Text(widget.item.name),
-        subtitle: Text(widget.item.description),
+        subtitle: Text(widget.item.description ?? ''),
         trailing: Text('${widget.item.amount} ${widget.item.amountUnit.name}'),
         selected: _checked,
       ),

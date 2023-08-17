@@ -31,19 +31,10 @@ class _ItemsState extends State<Items> {
                 name: 'Item $index',
                 description: 'Description $index',
                 image: Image.network(
-                  'https://unsplash.it/400/400?image=${Random().nextInt(1000)}',
+                  'https://picsum.photos/200/300?random=$index',
                   fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) => const Center(
-                    child: Icon(Icons.error),
-                  ),
                 ),
-                category: 'Category $index',
+                category: ['Category $index'],
                 id: 'id $index',
               ),
             );

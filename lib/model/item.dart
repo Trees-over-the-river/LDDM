@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class Item {
   final String name;
-  final String description;
-  final Image image;
-  final String category;
+  final String? description;
+  final Image? image;
+  final List<String> category;
   final String id;
   final int amount;
   final AmountUnit amountUnit;
