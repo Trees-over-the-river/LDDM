@@ -17,10 +17,15 @@ class _ItemsState extends State<Items> {
     (index) => Item(
       name: 'Item $index',
       description: 'Description $index',
-      image: Image.network(
-        'https://picsum.photos/200/300?random=$index',
-        fit: BoxFit.cover,
-      ),
+      image: Image.network('https://picsum.photos/200/300?random=$index',
+          fit: BoxFit.cover, loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) {
+          return child;
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }),
       category: ['Category $index'],
       id: 'id $index',
     ),
@@ -34,7 +39,7 @@ class _ItemsState extends State<Items> {
         title: const Text('Items'),
       ),
       body: ReorderableListView(
-          cacheExtent: 300,
+          cacheExtent: 1000,
           onReorder: (oldIndex, newIndex) => setState(() {
                 if (oldIndex < newIndex) {
                   newIndex -= 1;

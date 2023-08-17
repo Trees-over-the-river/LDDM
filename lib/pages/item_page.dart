@@ -20,7 +20,15 @@ class _ItemPageState extends State<ItemPage> {
       ),
       body: Column(
         children: [
-          widget.item.image ?? const SizedBox(),
+          Hero(
+            tag: "Item image ${widget.item.id}",
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  child: widget.item.image ?? const Icon(Icons.image)),
+            ),
+          ),
           Text(widget.item.description ?? ''),
           Text(widget.item.category.join(' | ')),
           Text(widget.item.amount.toString()),
