@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pricely/model/item.dart';
 
-import '../pages/item_page.dart';
-
 class ItemWidget extends StatefulWidget {
   const ItemWidget(
     this.item, {
@@ -35,17 +33,6 @@ class _ItemWidgetState extends State<ItemWidget> {
     }
   }
 
-  void _onTap() {
-    widget.onTap?.call();
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ItemPage(widget.item),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -72,7 +59,7 @@ class _ItemWidgetState extends State<ItemWidget> {
         ),
       ),
       child: ListTile(
-        onTap: _onTap,
+        onTap: widget.onTap,
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: SizedBox(
@@ -84,6 +71,7 @@ class _ItemWidgetState extends State<ItemWidget> {
         subtitle: Text(widget.item.description ?? ''),
         trailing: Text('${widget.item.amount} ${widget.item.amountUnit.name}'),
         selected: _checked,
+        enableFeedback: true,
       ),
     );
   }
