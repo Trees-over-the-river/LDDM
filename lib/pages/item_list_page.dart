@@ -1,34 +1,37 @@
+import 'dart:math';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pricely/model/item.dart';
 import 'package:pricely/widget/item_widget.dart';
 
 import 'item_page.dart';
 
-class Items extends StatefulWidget {
-  const Items({Key? key}) : super(key: key);
+class ItemListPage extends StatefulWidget {
+  const ItemListPage({Key? key, this.items = const []}) : super(key: key);
+
+  final List<Item> items;
 
   @override
-  State<Items> createState() => _ItemsState();
+  State<ItemListPage> createState() => _ItemListPageState();
 }
 
-class _ItemsState extends State<Items> {
+class _ItemListPageState extends State<ItemListPage> {
   List<Item> items = List.generate(
     1000,
-    (index) => Item(
-      name: 'Item $index',
-      description: 'Description $index',
-      image: Image.network('https://picsum.photos/200/300?random=$index',
-          fit: BoxFit.cover, loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) {
-          return child;
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }),
-      category: ['Category $index'],
-      id: 'id $index',
-    ),
+    (index) => Item(index.toString(),
+        name: 'Item $index',
+        amount: Random().nextInt(1000),
+        amountUnit: AmountUnit.none,
+        image: CachedNetworkImageProvider(
+          'https://picsum.photos/seed/$index/200/300',
+          cacheKey: 'item_$index',
+        ),
+        category: List.generate(
+          Random().nextInt(5),
+          (index) => 'Category $index',
+        ),
+        description: 'Description $index'),
   );
 
   @override

@@ -60,14 +60,27 @@ class _ItemWidgetState extends State<ItemWidget> {
       ),
       child: ListTile(
         onTap: widget.onTap,
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: SizedBox(
-            height: 50,
-            width: 50,
-            child: Hero(
-              tag: "Item image ${widget.item.id}",
-              child: widget.item.image ?? const Icon(Icons.image),
+        leading: Hero(
+          tag: "Item image ${widget.item.id}",
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SizedBox(
+              height: 50,
+              width: 50,
+              child: Builder(
+                builder: (context) {
+                  if (widget.item.image != null) {
+                    return Image(
+                      image: widget.item.image!,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.image),
+                      fit: BoxFit.cover,
+                    );
+                  } else {
+                    return const Icon(Icons.image);
+                  }
+                },
+              ),
             ),
           ),
         ),

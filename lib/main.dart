@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pricely/pages/items.dart';
+import 'package:pricely/pages/item_list_page.dart';
 import 'package:pricely/pages/login.dart';
 
 void main() {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/login': (context) => const Login(),
-        '/items': (context) => const Items(),
+        '/items': (context) => const ItemListPage(),
       },
       home: const MyHomePage(title: 'Pricely'),
     );
