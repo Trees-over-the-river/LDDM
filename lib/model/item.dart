@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Item {
-  final String name;
-  final String? description;
-  final ImageProvider? image;
+  String name;
+  String? description;
+  ImageProvider? image;
   final List<String> category;
   final String id;
-  final int amount;
-  final AmountUnit amountUnit;
+  int amount;
+  AmountUnit amountUnit;
 
   Item(
     this.id, {
