@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pricely/model/item.dart';
+import 'package:pricely/widget/item_dialog.dart';
 import 'package:pricely/widget/item_widget.dart';
 
 import 'item_page.dart';
@@ -34,6 +35,11 @@ class _ItemListPageState extends State<ItemListPage> {
         description: 'Description $index'),
   );
 
+  void _showDetails(Item item) {
+    //Show a dialog with the item details
+    showDialog(context: context, builder: (context) => ItemDialog(item: item));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,14 +61,7 @@ class _ItemListPageState extends State<ItemListPage> {
                 (item) => ItemWidget(
                   item,
                   key: ValueKey(item.id),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ItemPage(item),
-                      ),
-                    );
-                  },
+                  onTap: () => _showDetails(item),
                   onCheck: () {
                     setState(() {
                       items.remove(item);
