@@ -37,7 +37,20 @@ class _ItemListPageState extends State<ItemListPage> {
 
   void _showDetails(Item item) {
     //Show a dialog with the item details
-    showDialog(context: context, builder: (context) => ItemDialog(item: item));
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ItemDialog(item),
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+        barrierDismissible: true,
+      ),
+    );
   }
 
   @override

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:pricely/model/item.dart';
 
 class ItemDialog extends StatefulWidget {
-  const ItemDialog({Key? key, required this.item}) : super(key: key);
+  const ItemDialog(this.item, {Key? key}) : super(key: key);
 
   final Item item;
 
@@ -64,6 +64,7 @@ class _ItemDialogState extends State<ItemDialog> {
                   ),
                 ),
                 DropdownButton<AmountUnit>(
+                  alignment: Alignment.centerLeft,
                   value: widget.item.amountUnit,
                   onChanged: (value) {},
                   items: AmountUnit.values
