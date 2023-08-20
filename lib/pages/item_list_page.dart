@@ -69,6 +69,7 @@ class _ItemListPageState extends State<ItemListPage> {
                 final item = items.removeAt(oldIndex);
                 items.insert(newIndex, item);
               }),
+          buildDefaultDragHandles: false,
           children: items
               .map(
                 (item) => ItemWidget(

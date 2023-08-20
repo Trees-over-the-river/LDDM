@@ -15,40 +15,34 @@ class _ItemDialogState extends State<ItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.item.name),
+      title: Hero(
+        tag: "Item image ${widget.item.id}",
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+              constraints: const BoxConstraints.expand(height: 200),
+              child: Image(
+                image: widget.item.image ??
+                    const AssetImage('assets/images/no_image.png'),
+                fit: BoxFit.cover,
+              )),
+        ),
+      ),
       content: SingleChildScrollView(
         child: Column(
           children: [
-            Hero(
-              tag: "Item image ${widget.item.id}",
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                    constraints: const BoxConstraints.expand(height: 100),
-                    child: Image(
-                      image: widget.item.image ??
-                          const AssetImage('assets/images/no_image.png'),
-                      fit: BoxFit.cover,
-                    )),
-              ),
-            ),
-            const SizedBox(height: 20),
             TextField(
               controller: TextEditingController(text: widget.item.name),
               decoration: const InputDecoration(
                 labelText: 'Name',
               ),
-              readOnly: true,
             ),
-            const SizedBox(height: 20),
             TextField(
               controller: TextEditingController(text: widget.item.description),
               decoration: const InputDecoration(
                 labelText: 'Description',
               ),
-              readOnly: true,
             ),
-            const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
@@ -58,7 +52,6 @@ class _ItemDialogState extends State<ItemDialog> {
                     decoration: const InputDecoration(
                       labelText: 'Amount',
                     ),
-                    readOnly: true,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
@@ -66,7 +59,11 @@ class _ItemDialogState extends State<ItemDialog> {
                 DropdownButton<AmountUnit>(
                   alignment: Alignment.centerLeft,
                   value: widget.item.amountUnit,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      widget.item.amountUnit = value ?? AmountUnit.none;
+                    });
+                  },
                   items: AmountUnit.values
                       .map(
                         (e) => DropdownMenuItem(
@@ -78,21 +75,13 @@ class _ItemDialogState extends State<ItemDialog> {
                 ),
               ],
             ),
-            TextField(
-              controller:
-                  TextEditingController(text: widget.item.category.join(', ')),
-              decoration: const InputDecoration(
-                labelText: 'Category',
-              ),
-              readOnly: true,
-            ),
           ],
         ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
+          child: const Text('Save'),
         ),
       ],
     );
