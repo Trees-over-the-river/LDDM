@@ -3,10 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pricely/model/item.dart';
-import 'package:pricely/widget/item_dialog.dart';
 import 'package:pricely/widget/item_widget.dart';
-
-import 'item_page.dart';
 
 class ItemListPage extends StatefulWidget {
   const ItemListPage({Key? key, this.items = const []}) : super(key: key);
@@ -35,24 +32,6 @@ class _ItemListPageState extends State<ItemListPage> {
         description: 'Description $index'),
   );
 
-  void _showDetails(Item item) {
-    //Show a dialog with the item details
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        opaque: false,
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ItemDialog(item),
-        barrierColor: Colors.black.withOpacity(0.5),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-        barrierDismissible: true,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +54,8 @@ class _ItemListPageState extends State<ItemListPage> {
                 (item) => ItemWidget(
                   item,
                   key: ValueKey(item.id),
-                  onTap: () => _showDetails(item),
+                  onTap: () =>
+                      Navigator.of(context).pushNamed('/item', arguments: item),
                   onCheck: () {
                     setState(() {
                       items.remove(item);

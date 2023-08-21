@@ -7,6 +7,20 @@ class ItemDialog extends StatefulWidget {
 
   final Item item;
 
+  //build route
+  Route<ItemDialog> get route => PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ItemDialog(item),
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+        barrierDismissible: true,
+      );
+
   @override
   _ItemDialogState createState() => _ItemDialogState();
 }

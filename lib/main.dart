@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pricely/pages/item_list_page.dart';
+import 'package:pricely/pages/lists_page.dart';
 import 'package:pricely/pages/login.dart';
+import 'package:pricely/widget/item_dialog.dart';
+
+import 'model/item.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +26,14 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const Login(),
         '/items': (context) => const ItemListPage(),
+        '/lists': (context) => const ListsPage(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == '/item') {
+          final item = settings.arguments as Item;
+          return ItemDialog(item).route;
+        }
+        return null;
       },
       home: const MyHomePage(title: 'Pricely'),
     );
@@ -68,12 +80,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 Hero(
                   tag: 'LoginButton',
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/login');
-                    },
+                    onPressed: () => Navigator.pushNamed(context, '/login'),
                     child: const Text('Entrar'),
                   ),
                 ),
+                const Spacer(),
+                ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(context, '/lists'),
+                    child: const Text('Lists')),
               ],
             ),
             SizedBox.fromSize(size: const Size.fromHeight(20)),
