@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pricely/model/item.dart';
-import 'package:pricely/widget/item_widget.dart';
+import 'package:pricely/widgets/item_widget.dart';
 
 class ItemListPage extends StatefulWidget {
   const ItemListPage({Key? key, this.items = const []}) : super(key: key);

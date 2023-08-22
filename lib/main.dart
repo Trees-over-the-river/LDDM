@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pricely/pages/item_list_page.dart';
 import 'package:pricely/pages/lists_page.dart';
 import 'package:pricely/pages/login.dart';
-import 'package:pricely/widget/item_dialog.dart';
+import 'package:pricely/widgets/item_dialog.dart';
 
 import 'model/item.dart';
 
