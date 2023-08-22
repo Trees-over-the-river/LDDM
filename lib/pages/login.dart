@@ -15,31 +15,32 @@ class _LoginState extends State<Login> {
           color: Theme.of(context).colorScheme.primary,
           height: MediaQuery.of(context).size.height / 2),
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          iconTheme: const IconThemeData(color: Colors.white),
+          elevation: 0,
+          title: const Text('Pricely',
+              style: TextStyle(
+                  fontFamily: 'Pacifico', color: Colors.white, fontSize: 30)),
+        ),
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Container(
             alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             margin:
                 EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Hero(
-                  tag: 'Logo',
-                  child: FlutterLogo(
-                    size: 150,
-                    style: FlutterLogoStyle.markOnly,
-                  ),
-                ),
                 SizedBox.fromSize(size: const Size.fromHeight(50)),
-                TextField(
-                  decoration: const InputDecoration(
+                const TextField(
+                  decoration: InputDecoration(
                     labelText: 'Email',
                   ),
                 ),
-                TextField(
-                  decoration: const InputDecoration(
+                const TextField(
+                  decoration: InputDecoration(
                     labelText: 'Password',
                   ),
                   obscureText: true,
