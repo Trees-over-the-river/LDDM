@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:pricely/model/item.dart';
+import 'package:pricely/widgets/item_dialog.dart';
 import 'package:pricely/widgets/item_widget.dart';
 
 class ItemListPage extends StatefulWidget {
@@ -38,6 +40,17 @@ class _ItemListPageState extends State<ItemListPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Items'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+          ),
+          IconButton(
+              onPressed: () {
+                FlutterContacts.openExternalPick();
+              },
+              icon: const Icon(Icons.share))
+        ],
       ),
       body: ReorderableListView(
           cacheExtent: 1000,
@@ -69,6 +82,12 @@ class _ItemListPageState extends State<ItemListPage> {
                 ),
               )
               .toList()),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed('/item', arguments: Item.empty());
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

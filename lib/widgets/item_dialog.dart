@@ -31,16 +31,18 @@ class _ItemDialogState extends State<ItemDialog> {
     return AlertDialog(
       title: Hero(
         tag: "Item image ${widget.item.id}",
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-              constraints: const BoxConstraints.expand(height: 200),
-              child: Image(
-                image: widget.item.image ??
-                    const AssetImage('assets/images/no_image.png'),
-                fit: BoxFit.cover,
-              )),
-        ),
+        child: (widget.item.image != null)
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  constraints: const BoxConstraints.expand(height: 150),
+                  child: Image(
+                    image: widget.item.image!,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              )
+            : const SizedBox.shrink(),
       ),
       content: SingleChildScrollView(
         child: Column(

@@ -30,6 +30,15 @@ class Item {
     this.amountUnit = AmountUnit.kg,
   }) : id = UniqueKey().toString();
 
+  Item.empty({
+    this.name = '',
+    this.description,
+    this.image,
+    this.category = const [],
+    this.amount = 0,
+    this.amountUnit = AmountUnit.kg,
+  }) : id = UniqueKey().toString();
+
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
       json['id'],
