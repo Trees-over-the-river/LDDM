@@ -1,7 +1,9 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pricely/model/item.dart';
+import 'package:pricely/widgets/create_lists_dialog.dart';
 import 'package:pricely/widgets/list_griditem_widget.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -21,7 +23,9 @@ class _ListsPageState extends State<ListsPage> {
           name: 'Item ${index + listi * 100}',
           amount: Random().nextInt(1000),
           amountUnit: AmountUnit.none,
-          image: null,
+          image: CachedNetworkImageProvider(
+              'https://picsum.photos/seed/${index + listi * 100}/200/200',
+              cacheKey: 'item_${index + listi * 100}'),
           category: List.generate(
             Random().nextInt(5),
             (index) => 'Category $index',
@@ -35,7 +39,7 @@ class _ListsPageState extends State<ListsPage> {
     var tiles = [
       for (int i = 0; i < items.length; i++)
         SizedBox.square(
-            dimension: MediaQuery.of(context).size.width / 2 - 30,
+            dimension: 180,
             child: ListGriditemWidget(items[i], title: 'List $i'))
     ];
 
@@ -43,15 +47,25 @@ class _ListsPageState extends State<ListsPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Lists'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+          ),
+        ],
       ),
       body: Container(
         alignment: Alignment.topCenter,
         padding: const EdgeInsets.all(8),
         child: ReorderableWrap(
           onReorder: _onReorder,
-          maxMainAxisCount: 2,
           children: tiles,
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showDialog(
+            context: context, builder: (context) => const CreateListsDialog()),
+        child: const Icon(Icons.add),
       ),
     );
   }
