@@ -7,6 +7,7 @@ class Item {
   final List<String> category;
   final String id;
   int amount;
+  DateTime? addedDate;
   AmountUnit amountUnit;
 
   Item(
@@ -14,17 +15,21 @@ class Item {
     required this.name,
     this.description,
     this.image,
+    this.addedDate,
     this.category = const [],
     this.amount = 0,
     this.amountUnit = AmountUnit.kg,
   })  : assert(id.isNotEmpty),
         assert(name.isNotEmpty),
-        assert(amount >= 0);
+        assert(amount >= 0) {
+    addedDate ??= DateTime.now();
+  }
 
   Item.generateID({
     required this.name,
     this.description,
     this.image,
+    this.addedDate,
     this.category = const [],
     this.amount = 0,
     this.amountUnit = AmountUnit.kg,
@@ -34,6 +39,7 @@ class Item {
     this.name = '',
     this.description,
     this.image,
+    this.addedDate,
     this.category = const [],
     this.amount = 0,
     this.amountUnit = AmountUnit.kg,
