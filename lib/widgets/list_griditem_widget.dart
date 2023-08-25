@@ -28,14 +28,13 @@ class _ListGriditemWidgetState extends State<ListGriditemWidget> {
             ),
             //Image grid
             Expanded(
-              child: Builder(builder: (context) {
-                return GridView.count(
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: GridView.count(
                   crossAxisCount: 2,
                   mainAxisSpacing: 2,
                   crossAxisSpacing: 2,
                   semanticChildCount: 4,
-                  //Get the max height from the parent
-
                   padding: const EdgeInsets.all(2),
                   physics: const NeverScrollableScrollPhysics(),
                   children: List.generate(
@@ -50,8 +49,8 @@ class _ListGriditemWidgetState extends State<ListGriditemWidget> {
                           : const SizedBox.shrink();
                     },
                   ),
-                );
-              }),
+                ),
+              ),
             ),
             Text(
               'Itens: ${widget.items.length}',
