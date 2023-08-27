@@ -50,13 +50,13 @@ class _ItemDialogState extends State<ItemDialog> {
             TextField(
               controller: TextEditingController(text: widget.item.name),
               decoration: const InputDecoration(
-                labelText: 'Name',
+                labelText: 'Nome',
               ),
             ),
             TextField(
               controller: TextEditingController(text: widget.item.description),
               decoration: const InputDecoration(
-                labelText: 'Description',
+                labelText: 'Descrição',
               ),
             ),
             Row(
@@ -66,7 +66,7 @@ class _ItemDialogState extends State<ItemDialog> {
                     controller: TextEditingController(
                         text: widget.item.amount.toString()),
                     decoration: const InputDecoration(
-                      labelText: 'Amount',
+                      labelText: 'Quantidade',
                     ),
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],

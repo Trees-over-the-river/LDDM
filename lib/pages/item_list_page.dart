@@ -7,8 +7,10 @@ import 'package:pricely/model/item.dart';
 import 'package:pricely/widgets/item_widget.dart';
 
 class ItemListPage extends StatefulWidget {
-  const ItemListPage({Key? key, this.items = const []}) : super(key: key);
+  const ItemListPage({Key? key, this.items = const [], this.title = "Itens"})
+      : super(key: key);
 
+  final String title;
   final List<Item> items;
 
   @override
@@ -38,7 +40,7 @@ class _ItemListPageState extends State<ItemListPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Items'),
+        title: Text(widget.title),
         actions: [
           IconButton(
             onPressed: () {},

@@ -46,7 +46,7 @@ class _ListsPageState extends State<ListsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Lists'),
+        title: const Text('Listas'),
         actions: [
           IconButton(
             onPressed: () {},
