@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
-
+class AboutPage extends StatefulWidget {
+  const AboutPage({Key? key}) : super(key: key);
   @override
-  _LoginState createState() => _LoginState();
+  _AboutPageState createState() => _AboutPageState();
 }
 
-class _LoginState extends State<Login> {
+class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,52 +31,16 @@ class _LoginState extends State<Login> {
                         color: Colors.green,
                         fontSize: 80),
                     textAlign: TextAlign.center),
-                const SizedBox(height: 150),
+                const SizedBox(height: 50),
                 Form(
                   child: Column(
                     children: [
                       Text(
-                        'O Pricely enviará uma mensagem SMS para verificar seu número de telefone.',
+                        'O Pricely tem como objetivo facilitar o dia a dia dos usuários ao oferecer uma forma mais rápida e fácil de manter e organizar suas listas de compras. Nele, você poderá criar várias listas, adicionando, deletando e concluindo items delas, além de poder compartilhar uma lista com seus contatos que também estão usando o app para que todos possam editá-la.\nEste aplicativo foi desenvolvido na disciplina de Laboratório de Desenvolvimento para Dispositivos Móveis por alunos de Ciência da Computação da PUC Minas.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontStyle: FontStyle.italic,
+                              fontStyle: FontStyle.normal,
                             ),
-                      ),
-                      const SizedBox(height: 50),
-                      Row(children: [
-                        SizedBox(
-                          width: 80,
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'DDD',
-                              border: OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.phone,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(2)
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Número de telefone',
-                              border: OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.phone,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(11)
-                            ],
-                          ),
-                        ),
-                      ]),
-                      const SizedBox(height: 50),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Login'),
                       ),
                     ],
                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pricely/pages/item_list_page.dart';
 import 'package:pricely/pages/lists_page.dart';
 import 'package:pricely/pages/login.dart';
+import 'package:pricely/pages/about.dart';
 import 'package:pricely/widgets/item_dialog.dart';
 
 import 'model/item.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Pricely',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green[800]!),
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(),
         '/items': (context) => const ItemListPage(),
         '/lists': (context) => const ListsPage(),
+        '/about': (context) => const AboutPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/item') {
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {
         }
         return null;
       },
-      home: const MyHomePage(title: 'Pricely'),
+      home: const ListsPage(),
     );
   }
 }

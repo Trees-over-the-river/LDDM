@@ -19,7 +19,7 @@ class ItemListPage extends StatefulWidget {
 
 class _ItemListPageState extends State<ItemListPage> {
   List<Item> items = List.generate(
-    1000,
+    10,
     (index) => Item(index.toString(),
         name: 'Item $index',
         amount: Random().nextInt(1000),

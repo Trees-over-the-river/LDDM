@@ -47,10 +47,22 @@ class _ListsPageState extends State<ListsPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Listas'),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/login');
+          },
+          icon: const Icon(Icons.person),
+        ),
         actions: [
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.search),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/about');
+            },
+            icon: const Icon(Icons.question_mark),
           ),
         ],
       ),
