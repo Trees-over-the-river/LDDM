@@ -17,14 +17,14 @@ class ListsPage extends StatefulWidget {
 class _ListsPageState extends State<ListsPage> {
   List<Widget> tiles = List.generate(
     10,
-    (listi) => SizedBox(
-      width: 200,
-      height: 200,
+    (listi) => LimitedBox(
+      maxHeight: 200,
+      maxWidth: 200,
       child: ListGriditemWidget(
         List.generate(
-          100,
-          (index) => Item((index + listi * 100).toString(),
-              name: 'Item ${index + listi * 100}',
+          10,
+          (index) => Item((index + listi * 10).toString(),
+              name: 'Item ${index + listi * 10}',
               amount: Random().nextInt(1000),
               amountUnit: AmountUnit.none,
               image: CachedNetworkImageProvider(
@@ -34,7 +34,7 @@ class _ListsPageState extends State<ListsPage> {
                 Random().nextInt(5),
                 (index) => 'Category $index',
               ),
-              description: 'Description ${index + listi * 100}'),
+              description: 'Description ${index + listi * 10}'),
         ),
         title: "List $listi",
       ),
@@ -70,7 +70,9 @@ class _ListsPageState extends State<ListsPage> {
         alignment: Alignment.topCenter,
         padding: const EdgeInsets.all(8),
         child: ReorderableWrap(
+          runSpacing: 8,
           onReorder: _onReorder,
+          enableReorder: false,
           children: tiles,
         ),
       ),
@@ -84,9 +86,6 @@ class _ListsPageState extends State<ListsPage> {
 
   void _onReorder(oldIndex, newIndex) {
     setState(() {
-      if (oldIndex < newIndex) {
-        newIndex -= 1;
-      }
       final item = tiles.removeAt(oldIndex);
       tiles.insert(newIndex, item);
     });
