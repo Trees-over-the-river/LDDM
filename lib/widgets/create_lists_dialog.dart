@@ -4,7 +4,7 @@ class CreateListsDialog extends StatefulWidget {
   const CreateListsDialog({Key? key}) : super(key: key);
 
   @override
-  _CreateListsDialogState createState() => _CreateListsDialogState();
+  createState() => _CreateListsDialogState();
 }
 
 class _CreateListsDialogState extends State<CreateListsDialog> {

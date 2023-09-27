@@ -11,7 +11,7 @@ class ListsPage extends StatefulWidget {
   const ListsPage({Key? key}) : super(key: key);
 
   @override
-  _ListsPageState createState() => _ListsPageState();
+  createState() => _ListsPageState();
 }
 
 class _ListsPageState extends State<ListsPage> {

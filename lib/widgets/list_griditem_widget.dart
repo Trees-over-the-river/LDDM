@@ -9,7 +9,7 @@ class ListGriditemWidget extends StatefulWidget {
   final List<Item> items;
 
   @override
-  _ListGriditemWidgetState createState() => _ListGriditemWidgetState();
+  createState() => _ListGriditemWidgetState();
 }
 
 class _ListGriditemWidgetState extends State<ListGriditemWidget> {
