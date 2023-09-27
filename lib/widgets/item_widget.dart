@@ -1,42 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:pricely/model/item.dart';
 
-class ItemWidget extends StatefulWidget {
+class ItemWidget extends StatelessWidget {
   const ItemWidget(
     this.item, {
     required Key key,
     this.onDelete,
     this.onTap,
+    this.checked = false,
     this.onCheck,
   }) : super(key: key);
 
   final Item item;
+  final bool checked;
   final void Function()? onDelete; //Called when swiped left
+  final void Function()? onCheck;
   final void Function()? onTap; //Called when clicked
-  final void Function()? onCheck; //Called when swiped right
-
-  @override
-  State<ItemWidget> createState() => _ItemWidgetState();
-}
-
-class _ItemWidgetState extends State<ItemWidget> {
-  bool _checked = false;
 
   void _onDimissed(DismissDirection direction) {
     if (direction == DismissDirection.startToEnd) {
-      setState(() {
-        _checked = !_checked;
-      });
-      widget.onCheck?.call();
+      // Swiped left
+      onDelete?.call();
     } else if (direction == DismissDirection.endToStart) {
-      widget.onDelete?.call();
+      // Swiped right
+      onCheck?.call();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: widget.key!,
+      key: key!,
       onDismissed: _onDimissed,
       background: Container(
         color: Colors.green,
@@ -59,9 +53,9 @@ class _ItemWidgetState extends State<ItemWidget> {
         ),
       ),
       child: ListTile(
-        onTap: widget.onTap,
+        onTap: onTap,
         leading: Hero(
-          tag: "Item image ${widget.item.id}",
+          tag: "Item image ${item.id}",
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: SizedBox(
@@ -69,9 +63,9 @@ class _ItemWidgetState extends State<ItemWidget> {
               width: 50,
               child: Builder(
                 builder: (context) {
-                  if (widget.item.image != null) {
+                  if (item.image != null) {
                     return Image(
-                      image: widget.item.image!,
+                      image: item.image!,
                       errorBuilder: (context, error, stackTrace) =>
                           const Icon(Icons.image),
                       fit: BoxFit.cover,
@@ -84,10 +78,16 @@ class _ItemWidgetState extends State<ItemWidget> {
             ),
           ),
         ),
-        title: Text(widget.item.name),
-        subtitle: Text(widget.item.description ?? ''),
-        trailing: Text('${widget.item.amount} ${widget.item.amountUnit.name}'),
-        selected: _checked,
+        title: Text(item.name,
+            style: checked
+                ? const TextStyle(decoration: TextDecoration.lineThrough)
+                : null),
+        subtitle: Text(item.description ?? '',
+            style: checked
+                ? const TextStyle(decoration: TextDecoration.lineThrough)
+                : null),
+        trailing: Text('${item.amount} ${item.amountUnit.name}'),
+        selected: checked,
         enableFeedback: true,
       ),
     );
