@@ -1,14 +1,17 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-class Item {
+class Item implements Comparable{
   String name;
   String? description;
   ImageProvider? image;
-  final List<String> category;
-  final String id;
+  late final List<String> category;
+  final int id;
   int amount;
   DateTime? addedDate;
-  AmountUnit amountUnit;
+  late AmountUnit amountUnit;  
+  bool isChecked;
 
   Item(
     this.id, {
@@ -19,31 +22,38 @@ class Item {
     this.category = const [],
     this.amount = 0,
     this.amountUnit = AmountUnit.kg,
-  })  : assert(id.isNotEmpty),
+    this.isChecked = false,
+  })  :
         assert(name.isNotEmpty),
         assert(amount >= 0) {
     addedDate ??= DateTime.now();
   }
 
+  Item.fromRow(Map<String, Object?> row) : id = row['ID'] as int, name = row['NAME'] as String, description = row['DESCRIPTION'] as String?, amount = row['AMOUNT'] as int, amountUnit = AmountUnit.values[row['AMOUNT_UNIT'] as int], isChecked = row['IS_CHECKED'] as int == 1;
+
   Item.generateID({
+
     required this.name,
+    this.isChecked = false,
     this.description,
     this.image,
     this.addedDate,
     this.category = const [],
     this.amount = 0,
     this.amountUnit = AmountUnit.kg,
-  }) : id = UniqueKey().toString();
+  }) : id = Random().nextInt(1<<32);
+
 
   Item.empty({
     this.name = '',
+    this.isChecked = false,
     this.description,
     this.image,
     this.addedDate,
     this.category = const [],
     this.amount = 0,
     this.amountUnit = AmountUnit.kg,
-  }) : id = UniqueKey().toString();
+  }) : id = Random().nextInt(1<<32);
 
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
@@ -56,6 +66,19 @@ class Item {
       amountUnit: AmountUnit.values[json['amountUnit']],
     );
   }
+
+  @override
+  int compareTo(covariant Item other) => id.compareTo(id);
+
+  @override
+  bool operator == (covariant Item other) => id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() => 'Item, id = $id, name = $name, description = $description, amount = $amount';
+
 }
 
 enum AmountUnit {

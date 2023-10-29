@@ -1,8 +1,7 @@
-import 'dart:math';
-
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:pricely/database/itemdb.dart';
 import 'package:pricely/model/item.dart';
 import 'package:pricely/widgets/item_widget.dart';
 
@@ -19,27 +18,27 @@ class _ItemListPageState extends State<ItemListPage> {
   final _items = <Item>[];
   final _checkedItems = <Item>[];
 
+  final ItemDB _crudPricely = ItemDB();
+  late final Timer _timer;
+
   @override
   void initState() {
     super.initState();
 
-    //TODO: Remove this, test only
-    _items.addAll(List.generate(
-      10,
-      (index) => Item(index.toString(),
-          name: 'Item $index',
-          amount: Random().nextInt(1000),
-          amountUnit: AmountUnit.none,
-          image: CachedNetworkImageProvider(
-            'https://picsum.photos/seed/$index/200/300',
-            cacheKey: 'item_$index',
-          ),
-          category: List.generate(
-            Random().nextInt(5),
-            (index) => 'Category $index',
-          ),
-          description: 'Description $index'),
-    ));
+    _timer = Timer.periodic(
+        const Duration(seconds: 1),
+        (Timer t) => _crudPricely.fetchItems().then((value) => setState(() {
+              _items.clear();
+              _checkedItems.clear();
+              _items.addAll(value.where((element) => !element.isChecked));
+              _checkedItems.addAll(value.where((element) => element.isChecked));
+            })));
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -70,11 +69,13 @@ class _ItemListPageState extends State<ItemListPage> {
                 _items[index],
                 key: ValueKey(_items[index].id),
                 onTap: () => Navigator.of(context)
-                    .pushNamed('/item', arguments: _items[index]),
+                    .pushNamed('/item', arguments: [_items[index], false]),
                 onCheck: () {
                   setState(() {
                     var item = _items.removeAt(index);
+                    item.isChecked = true;
                     _checkedItems.add(item);
+                    ItemDB().update(item);
                   });
                 },
                 onDelete: () {
@@ -82,6 +83,7 @@ class _ItemListPageState extends State<ItemListPage> {
 
                   setState(() {
                     item = _items.removeAt(index);
+                    ItemDB().delete(item);
                   });
 
                   //Undo delete
@@ -92,6 +94,7 @@ class _ItemListPageState extends State<ItemListPage> {
                         label: 'Desfazer',
                         onPressed: () {
                           setState(() {
+                            ItemDB().create(item);
                             _items.insert(index, item);
                           });
                         },
@@ -119,12 +122,14 @@ class _ItemListPageState extends State<ItemListPage> {
               itemBuilder: (context, index) => ItemWidget(
                 _checkedItems[index],
                 key: ValueKey(_checkedItems[index].id),
-                onTap: () => Navigator.of(context)
-                    .pushNamed('/item', arguments: _checkedItems[index]),
+                onTap: () => Navigator.of(context).pushNamed('/item',
+                    arguments: [_checkedItems[index], false]),
                 onCheck: () {
                   setState(() {
                     var item = _checkedItems.removeAt(index);
+                    item.isChecked = false;
                     _items.add(item);
+                    ItemDB().update(item);
                   });
                 },
                 onDelete: () {
@@ -141,6 +146,7 @@ class _ItemListPageState extends State<ItemListPage> {
                         label: 'Desfazer',
                         onPressed: () {
                           setState(() {
+                            ItemDB().create(item);
                             _checkedItems.insert(index, item);
                           });
                         },
@@ -163,8 +169,9 @@ class _ItemListPageState extends State<ItemListPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed('/item', arguments: Item.empty());
+        onPressed: () async {
+          Navigator.of(context)
+              .pushNamed('/item', arguments: [Item.empty(), true]);
         },
         child: const Icon(Icons.add),
       ),

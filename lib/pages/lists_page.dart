@@ -23,7 +23,7 @@ class _ListsPageState extends State<ListsPage> {
       child: ListGriditemWidget(
         List.generate(
           10,
-          (index) => Item((index + listi * 10).toString(),
+          (index) => Item((index + listi * 10),
               name: 'Item ${index + listi * 10}',
               amount: Random().nextInt(1000),
               amountUnit: AmountUnit.none,
