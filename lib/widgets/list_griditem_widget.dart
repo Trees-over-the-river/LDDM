@@ -24,37 +24,71 @@ class _ListGriditemWidgetState extends State<ListGriditemWidget> {
           children: [
             Text(
               widget.title,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
               overflow: TextOverflow.ellipsis,
             ),
             //Image grid
             Expanded(
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 2,
-                  crossAxisSpacing: 2,
-                  semanticChildCount: 4,
-                  padding: const EdgeInsets.all(2),
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: List.generate(
-                    4,
-                    (index) {
-                      return (index < widget.items.length &&
-                              widget.items[index].image != null)
-                          ? Image(
-                              image: widget.items[index].image!,
-                              fit: BoxFit.cover,
-                            )
-                          : const SizedBox.shrink();
-                    },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.1),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(8.0),
+                    bottomRight: Radius.circular(8.0),
+                  ),
+                ),
+                padding: const EdgeInsets.all(8.0),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    semanticChildCount: 4,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: List.generate(
+                      4,
+                      (index) {
+                        if ((index < widget.items.length &&
+                            widget.items[index].image != null)) {
+                          var image = Image(
+                            image: widget.items[index].image!,
+                            fit: BoxFit.cover,
+                          );
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: (index == 3 && widget.items.length > 3)
+                                ? Stack(
+                                    children: [
+                                      image,
+                                      Container(
+                                        color: Colors.black.withOpacity(0.5),
+                                        child: Center(
+                                          child: Text(
+                                            '+${widget.items.length - 4}',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : image,
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-            Text(
-              'Itens: ${widget.items.length}',
-              style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
         ),
