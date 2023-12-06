@@ -5,11 +5,15 @@ import 'package:pricely/pages/lists_page.dart';
 import 'package:pricely/pages/login.dart';
 import 'package:pricely/pages/about.dart';
 import 'package:pricely/widgets/item_dialog.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'model/item.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(MyApp());
 }
 
@@ -52,6 +56,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/*
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
@@ -109,3 +114,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+*/

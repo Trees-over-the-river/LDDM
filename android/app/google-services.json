@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "664133474691",
+    "project_id": "lddm-2023",
+    "storage_bucket": "lddm-2023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664133474691:android:59e5634192f73170bbfeb6",
+        "android_client_info": {
+          "package_name": "com.example.pricely"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBu_4qQDK1EydKoyHJmsyukiqYUsM9nYbM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

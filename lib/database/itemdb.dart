@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:pricely/model/item.dart';
 import 'package:sqflite/sqflite.dart';
 
-external String toString();
-
 class ItemDB {
   static Database? _db;
 
