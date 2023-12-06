@@ -32,7 +32,7 @@ class _CreateListsDialogState extends State<CreateListsDialog> {
                   child: const Text('Cancelar'),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () { // TODO: salvar lista
                     Navigator.pop(context);
                   },
                   child: const Text('Criar'),

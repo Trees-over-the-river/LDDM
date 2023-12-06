@@ -6,7 +6,7 @@ import 'package:pricely/model/item.dart';
 import 'package:pricely/widgets/item_widget.dart';
 
 class ItemListPage extends StatefulWidget {
-  const ItemListPage({Key? key, this.title = "Itens"}) : super(key: key);
+  const ItemListPage({Key? key, this.title = "Nome da Lista"}) : super(key: key); // TODO: pegar nome da lista
 
   final String title;
 
@@ -49,14 +49,12 @@ class _ItemListPageState extends State<ItemListPage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search),
-          ),
-          IconButton(
               onPressed: () {
                 FlutterContacts.openExternalPick();
               },
-              icon: const Icon(Icons.share))
+              icon: const Icon(Icons.share),
+              color: Colors.black,
+            ),
         ],
       ),
       body: SingleChildScrollView(

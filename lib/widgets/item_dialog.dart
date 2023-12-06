@@ -128,7 +128,7 @@ class _ItemDialogState extends State<ItemDialog> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Save'),
+              child: const Text('Salvar'),
             ),
           ],
         ));

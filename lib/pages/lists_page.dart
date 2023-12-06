@@ -46,7 +46,7 @@ class _ListsPageState extends State<ListsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Listas'),
+        title: const Text('Minhas Listas'),
         leading: IconButton(
           onPressed: () {
             Navigator.pushNamed(context, '/login');
@@ -55,14 +55,11 @@ class _ListsPageState extends State<ListsPage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search),
-          ),
-          IconButton(
             onPressed: () {
               Navigator.pushNamed(context, '/about');
             },
-            icon: const Icon(Icons.question_mark),
+            icon: const Icon(Icons.info),
+            color: Colors.black,
           ),
         ],
       ),

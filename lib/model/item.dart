@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 class Item implements Comparable{
   String name;
   String? description;
-  ImageProvider? image;
-  late final List<String> category;
+  ImageProvider? image; // TODO: colocar imagem?
   final int id;
   int amount;
   DateTime? addedDate;
@@ -19,7 +18,6 @@ class Item implements Comparable{
     this.description,
     this.image,
     this.addedDate,
-    this.category = const [],
     this.amount = 0,
     this.amountUnit = AmountUnit.kg,
     this.isChecked = false,
@@ -32,13 +30,11 @@ class Item implements Comparable{
   Item.fromRow(Map<String, Object?> row) : id = row['ID'] as int, name = row['NAME'] as String, description = row['DESCRIPTION'] as String?, amount = row['AMOUNT'] as int, amountUnit = AmountUnit.values[row['AMOUNT_UNIT'] as int], isChecked = row['IS_CHECKED'] as int == 1;
 
   Item.generateID({
-
     required this.name,
     this.isChecked = false,
     this.description,
     this.image,
     this.addedDate,
-    this.category = const [],
     this.amount = 0,
     this.amountUnit = AmountUnit.kg,
   }) : id = Random().nextInt(1<<32);
@@ -50,7 +46,6 @@ class Item implements Comparable{
     this.description,
     this.image,
     this.addedDate,
-    this.category = const [],
     this.amount = 0,
     this.amountUnit = AmountUnit.kg,
   }) : id = Random().nextInt(1<<32);
@@ -61,7 +56,6 @@ class Item implements Comparable{
       name: json['name'],
       description: json['description'],
       image: json['image'],
-      category: json['category'],
       amount: json['amount'],
       amountUnit: AmountUnit.values[json['amountUnit']],
     );
