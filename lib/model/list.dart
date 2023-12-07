@@ -1,37 +1,29 @@
 import 'dart:math';
 
-import 'package:pricely/model/item.dart';
-import 'package:flutter/material.dart';
-
 class ItemList implements Comparable{
   String name;
-  List<Item>? items;
   final int id;
   
   ItemList(
     this.id, {
     required this.name,
-    this.items,
   })  :
         assert(name.isNotEmpty);
 
-  ItemList.fromRow(Map<String, Object?> row) : id = row['ID'] as int, name = row['NAME'] as String, items = row['ITEMS'] as List<Item>;
+  ItemList.fromRow(Map<String, Object?> row) : id = row['ID'] as int, name = row['NAME'] as String;
 
   ItemList.generateID({
     required this.name,
-    this.items,
   }) : id = Random().nextInt(1<<32);
 
   ItemList.empty({
     this.name = '',
-    this.items,
   }) : id = Random().nextInt(1<<32);
 
   factory ItemList.fromJson(Map<String, dynamic> json) {
     return ItemList(
       json['id'],
       name: json['name'],
-      items: json['items'],
     );
   }
 
@@ -45,6 +37,6 @@ class ItemList implements Comparable{
   int get hashCode => id.hashCode;
 
   @override
-  String toString() => 'ItemList, id = $id, name = $name, items = $items';
+  String toString() => 'ItemList, id = $id, name = $name';
 
 }

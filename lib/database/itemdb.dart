@@ -14,23 +14,26 @@ class ItemDB {
 
   Future<void> open(String path) async {
     var databasesPath = await getDatabasesPath();
-    print('Opening ItemDB at $databasesPath/$path');
+    // print('Opening ItemDB at $databasesPath/$path');
 
     _db = await openDatabase('$databasesPath/$path',
         version: 1,
         onCreate: (db, version) => db.execute(
               '''CREATE TABLE IF NOT EXISTS ITEMS (
-          ID INTEGER PRIMARY KEY AUTOINCREMENT,
-          NAME STRING NOT NULL,
-          DESCRIPTION STRING,
-          AMOUNT INTEGER NOT NULL,
-          AMOUNT_UNIT INTEGER NOT NULL,
-          ADDED_DATE DATETIME DEFAULT CURRENT_TIMESTAMP,
-          IS_CHECKED INTEGER DEFAULT 0
-        )''',
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    LIST_ID INTEGER NOT NULL, 
+                    NAME STRING NOT NULL,
+                    DESCRIPTION STRING,
+                    AMOUNT INTEGER NOT NULL,
+                    AMOUNT_UNIT INTEGER NOT NULL,
+                    ADDED_DATE DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    IS_CHECKED INTEGER DEFAULT 0,
+                    FOREIGN KEY (LIST_ID) REFERENCES LISTS (ID)
+                     ON DELETE NO ACTION ON UPDATE NO ACTION
+                  )''',
             ));
 
-    print('ItemDB opened (db = $_db)');
+    // print('ItemDB opened (db = $_db)');
   }
 
   Future<List<Item>> fetchItems() async {
@@ -43,6 +46,7 @@ class ItemDB {
           distinct: true,
           columns: [
             'ID',
+            'LIST_ID',
             'NAME',
             'DESCRIPTION',
             'AMOUNT',
@@ -53,27 +57,28 @@ class ItemDB {
 
 
       return read.map((row) {
-        print(row);
+        // print(row);
         return Item.fromRow(row);
       }).toList();
     } catch (e) {
-      print('Error fetching items = $e');
+      // print('Error fetching items = $e');
       return [];
     }
   }
 
   Future<bool> create(Item item) async {
-    print('Creating Item (db = $_db)');
+    // print('Creating Item (db = $_db)');
 
     final db = _db;
     if (db == null) {
-      print('Database is null');
+      // print('Item database is null');
       return false;
     }
 
     try {
       await db.insert('ITEMS', {
         'ID': item.id,
+        'LIST_ID': item.idList,
         'NAME': item.name,
         'DESCRIPTION': item.description,
         'AMOUNT': item.amount,
@@ -81,9 +86,9 @@ class ItemDB {
         'ADDED_DATE': item.addedDate,
         'IS_CHECKED': item.isChecked,
       });
-      print('Item created');
+      // print('Item created');
     } catch (e) {
-      print('Error in creating Item = $e');
+      // print('Error in creating Item = $e');
       return false;
     }
 
@@ -110,7 +115,7 @@ class ItemDB {
       ); 
       return true;
     } catch (e) {
-      print('Failed to update item, error = $e');
+      // print('Failed to update item, error = $e');
       return false;
     }
   }
@@ -129,7 +134,7 @@ class ItemDB {
       );
       return true;
     } catch (e) {
-      print('Deletion failed with error $e');
+      // print('Item deletion failed with error $e');
       return false;
     }
   }

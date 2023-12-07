@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pricely/database/itemdb.dart';
+import 'package:pricely/database/listdb.dart';
 import 'package:pricely/pages/item_list_page.dart';
 import 'package:pricely/pages/lists_page.dart';
 import 'package:pricely/pages/login.dart';
@@ -18,7 +19,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final ItemDB itemDB = ItemDB.open('db.sqlite');
+  final ItemDB itemDB = ItemDB.open('itemdb.sqlite');
+  final ListDB listDB = ListDB.open('listdb.sqlite');
 
   MyApp({super.key});
 

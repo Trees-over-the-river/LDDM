@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class Item implements Comparable{
   String name;
   String? description;
-  ImageProvider? image; // TODO: colocar imagem?
+  ImageProvider? image; 
   final int id;
+  final int? idList;
   int amount;
   DateTime? addedDate;
   late AmountUnit amountUnit;  
@@ -15,6 +16,7 @@ class Item implements Comparable{
   Item(
     this.id, {
     required this.name,
+    this.idList,
     this.description,
     this.image,
     this.addedDate,
@@ -27,10 +29,11 @@ class Item implements Comparable{
     addedDate ??= DateTime.now();
   }
 
-  Item.fromRow(Map<String, Object?> row) : id = row['ID'] as int, name = row['NAME'] as String, description = row['DESCRIPTION'] as String?, amount = row['AMOUNT'] as int, amountUnit = AmountUnit.values[row['AMOUNT_UNIT'] as int], isChecked = row['IS_CHECKED'] as int == 1;
+  Item.fromRow(Map<String, Object?> row) : id = row['ID'] as int, idList = row['LIST_ID'] as int, name = row['NAME'] as String, description = row['DESCRIPTION'] as String?, amount = row['AMOUNT'] as int, amountUnit = AmountUnit.values[row['AMOUNT_UNIT'] as int], isChecked = row['IS_CHECKED'] as int == 1;
 
   Item.generateID({
     required this.name,
+    this.idList,
     this.isChecked = false,
     this.description,
     this.image,
@@ -42,6 +45,7 @@ class Item implements Comparable{
 
   Item.empty({
     this.name = '',
+    this.idList,
     this.isChecked = false,
     this.description,
     this.image,
@@ -53,6 +57,7 @@ class Item implements Comparable{
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
       json['id'],
+      idList: json['idList'],
       name: json['name'],
       description: json['description'],
       image: json['image'],
@@ -71,7 +76,7 @@ class Item implements Comparable{
   int get hashCode => id.hashCode;
 
   @override
-  String toString() => 'Item, id = $id, name = $name, description = $description, amount = $amount';
+  String toString() => 'Item, id = $id, idList = $idList, name = $name, description = $description, amount = $amount';
 
 }
 
@@ -95,7 +100,7 @@ extension AmountUnitExtension on AmountUnit {
       case AmountUnit.ml:
         return 'ml';
       case AmountUnit.none:
-        return 'units';
+        return 'unid';
     }
   }
 }

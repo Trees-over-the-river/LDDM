@@ -30,10 +30,6 @@ class _ListsPageState extends State<ListsPage> {
               image: CachedNetworkImageProvider(
                   'https://picsum.photos/seed/${index + listi * 100}/200/200',
                   cacheKey: 'item_${index + listi * 100}'),
-              category: List.generate(
-                Random().nextInt(5),
-                (index) => 'Category $index',
-              ),
               description: 'Description ${index + listi * 10}'),
         ),
         title: "List $listi",

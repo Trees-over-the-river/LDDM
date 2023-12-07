@@ -33,7 +33,7 @@ class _LoginState extends State<Login> {
                         color: Colors.green,
                         fontSize: 80),
                     textAlign: TextAlign.center),
-                const SizedBox(height: 150),
+                const SizedBox(height: 50),
                 Form(
                   child: Column(
                     children: [
@@ -78,7 +78,7 @@ class _LoginState extends State<Login> {
                       const SizedBox(height: 50),
                       ElevatedButton(
                         onPressed: () {},
-                        child: const Text('Login'),
+                        child: const Text('Enviar'),
                       ),
                     ],
                   ),
