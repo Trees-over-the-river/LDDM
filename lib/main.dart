@@ -14,7 +14,7 @@ import 'model/list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(MyApp());
@@ -40,18 +40,32 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const Login(),
         '/lists': (context) => const ListsPage(),
-        // '/items': (context) => const ItemListPage(),
+        '/items': (context) {
+          final Map<String, dynamic>? args =
+              ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+          if (args != null) {
+            final int listId = args['listId'] as int;
+            return ItemListPage(
+              title: args['title'] ?? 'Nome da Lista',
+              listId: listId,
+            );
+          }
+
+          return const ItemListPage(title: 'Nome da Lista', listId: 0);
+        },
         '/about': (context) => const AboutPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/item') {
           if (settings.arguments == null) {
-            return ItemDialog(Item.empty(), true).route;
+            return ItemDialog(Item.empty(), true, listId: 0).route;
           }
           final item = (settings.arguments! as List)[0] as Item;
           final isNew = (settings.arguments! as List)[1] as bool;
+          final listId = (settings.arguments! as List)[2] as int;
 
-          return ItemDialog(item, isNew).route;
+          return ItemDialog(item, isNew, listId: listId).route;
         } else if (settings.name == '/list') {
           if (settings.arguments == null) {
             return CreateListsDialog(ItemList.empty()).route;
@@ -59,14 +73,6 @@ class MyApp extends StatelessWidget {
           final list = (settings.arguments! as List)[0] as ItemList;
 
           return CreateListsDialog(list).route;
-        } else if (settings.name == '/items') {
-          if (settings.arguments != null) {
-            final listId = settings.arguments as int; // Supondo que você passará o ID da lista como um argumento
-
-            return MaterialPageRoute(
-              builder: (context) => ItemListPage(title: 'Nome da Lista', listId: listId),
-            );
-          }
         }
         return null;
       },

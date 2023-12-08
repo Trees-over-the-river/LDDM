@@ -68,9 +68,9 @@ class ItemDB {
     }
   }
 
-  Future<bool> create(Item item) async {
+  Future<bool> create(Item item, int listId) async {
     print('Creating Item (db = $_db)');
-
+    
     final db = _db;
     if (db == null) {
       print('Item database is null');
@@ -80,7 +80,7 @@ class ItemDB {
     try {
       await db.insert('ITEMS', {
         'ID': item.id,
-        'LIST_ID': item.idList,
+        'LIST_ID': listId,
         'NAME': item.name,
         'DESCRIPTION': item.description,
         'AMOUNT': item.amount,
@@ -89,7 +89,7 @@ class ItemDB {
         'IS_CHECKED': item.isChecked,
       });
       print('Item created');
-    } catch (e) {
+          } catch (e) {
       print('Error in creating Item = $e');
       return false;
     }
@@ -97,7 +97,7 @@ class ItemDB {
     return true;
   }
 
-  Future<bool> update(Item item) async {
+  Future<bool> update(Item item, int listId) async {
     final db = _db;
     if(db == null) {
       return false;
@@ -112,8 +112,8 @@ class ItemDB {
         'ADDED_DATE': item.addedDate,
         'IS_CHECKED': item.isChecked,
       },
-      where: 'ID = ?',
-      whereArgs: [item.id],
+      where: 'LIST_ID = ? AND ID = ?',
+      whereArgs: [listId, item.id],
       ); 
       return true;
     } catch (e) {
@@ -122,7 +122,7 @@ class ItemDB {
     }
   }
 
-  Future<bool> delete(Item item) async {
+  Future<bool> delete(Item item, int listId) async {
     final db = _db;
     if (db == null) {
       return false;
@@ -131,9 +131,10 @@ class ItemDB {
     try {
       db.delete(
         'ITEMS',
-        where: 'ID = ?',
-        whereArgs: [item.id],
+        where: 'LIST_ID = ? AND ID = ?',
+        whereArgs: [listId, item.id],
       );
+      print('Item deleted');
       return true;
     } catch (e) {
       print('Item deletion failed with error $e');

@@ -27,13 +27,13 @@ class _ItemListPageState extends State<ItemListPage> {
     super.initState();
 
     _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (Timer t) => _itemDB.fetchItems(widget.listId).then((value) => setState(() {
-        _items.clear();
-        _checkedItems.clear();
-        _items.addAll(value.where((element) => !element.isChecked));
-        _checkedItems.addAll(value.where((element) => element.isChecked));
-      })));
+        const Duration(seconds: 1),
+        (Timer t) => _itemDB.fetchItems(widget.listId).then((value) => setState(() {
+                  _items.clear();
+                  _checkedItems.clear();
+                  _items.addAll(value.where((element) => !element.isChecked));
+                  _checkedItems.addAll(value.where((element) => element.isChecked));
+                })));
   }
 
   @override
@@ -68,13 +68,13 @@ class _ItemListPageState extends State<ItemListPage> {
                 _items[index],
                 key: ValueKey(_items[index].id),
                 onTap: () => Navigator.of(context)
-                    .pushNamed('/item', arguments: [_items[index], false]),
+                    .pushNamed('/item', arguments: [_items[index], false, widget.listId, widget.listId]),
                 onCheck: () {
                   setState(() {
                     var item = _items.removeAt(index);
                     item.isChecked = true;
                     _checkedItems.add(item);
-                    _itemDB.update(item);
+                    _itemDB.update(item, widget.listId);
                   });
                 },
                 onDelete: () {
@@ -82,10 +82,10 @@ class _ItemListPageState extends State<ItemListPage> {
 
                   setState(() {
                     item = _items.removeAt(index);
-                    _itemDB.delete(item);
+                    _itemDB.delete(item, widget.listId);
                   });
 
-//Undo delete
+                  //Undo delete
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: const Text('Item removido'),
@@ -93,7 +93,7 @@ class _ItemListPageState extends State<ItemListPage> {
                         label: 'Desfazer',
                         onPressed: () {
                           setState(() {
-                            _itemDB.create(item);
+                            _itemDB.create(item, widget.listId);
                             _items.insert(index, item);
                           });
                         },
@@ -122,13 +122,13 @@ class _ItemListPageState extends State<ItemListPage> {
                 _checkedItems[index],
                 key: ValueKey(_checkedItems[index].id),
                 onTap: () => Navigator.of(context).pushNamed('/item',
-                    arguments: [_checkedItems[index], false]),
+                    arguments: [_checkedItems[index], false, widget.listId]),
                 onCheck: () {
                   setState(() {
                     var item = _checkedItems.removeAt(index);
                     item.isChecked = false;
                     _items.add(item);
-                    _itemDB.update(item);
+                    _itemDB.update(item, widget.listId);
                   });
                 },
                 onDelete: () {
@@ -145,7 +145,7 @@ class _ItemListPageState extends State<ItemListPage> {
                         label: 'Desfazer',
                         onPressed: () {
                           setState(() {
-                            _itemDB.create(item);
+                            _itemDB.create(item, widget.listId);
                             _checkedItems.insert(index, item);
                           });
                         },
@@ -170,7 +170,7 @@ class _ItemListPageState extends State<ItemListPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           Navigator.of(context)
-              .pushNamed('/item', arguments: [Item.empty(), true]);
+              .pushNamed('/item', arguments: [Item.empty(), true, widget.listId]);
         },
         child: const Icon(Icons.add),
       ),

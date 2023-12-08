@@ -4,8 +4,9 @@ import 'package:pricely/database/itemdb.dart';
 import 'package:pricely/model/item.dart';
 
 class ItemDialog extends StatefulWidget {
-  ItemDialog(this.item, this.isNew, {Key? key}) : super(key: key);
+  ItemDialog(this.item, this.isNew, {Key? key, required this.listId}) : super(key: key);
 
+  final int listId;
   final Item item;
   final bool isNew;
   final ItemDB _crudPricely = ItemDB();
@@ -14,7 +15,7 @@ class ItemDialog extends StatefulWidget {
   Route<ItemDialog> get route => PageRouteBuilder(
         opaque: false,
         pageBuilder: (context, animation, secondaryAnimation) =>
-            ItemDialog(item, isNew),
+            ItemDialog(item, isNew, listId: listId),
         barrierColor: Colors.black.withOpacity(0.5),
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
             FadeTransition(
@@ -118,12 +119,12 @@ class _ItemDialogState extends State<ItemDialog> {
           actions: [
             TextButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                  if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
                   if (widget.isNew) {
-                    widget._crudPricely.create(_item);
+                    widget._crudPricely.create(_item, widget.listId);
                   } else {
-                    widget._crudPricely.update(_item);
+                    widget._crudPricely.update(_item, widget.listId);
                   }
                   Navigator.pop(context);
                 }
