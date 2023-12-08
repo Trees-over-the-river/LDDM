@@ -14,7 +14,7 @@ class ItemDB {
 
   Future<void> open(String path) async {
     var databasesPath = await getDatabasesPath();
-    // print('Opening ItemDB at $databasesPath/$path');
+    print('Opening ItemDB at $databasesPath/$path');
 
     _db = await openDatabase('$databasesPath/$path',
         version: 1,
@@ -33,16 +33,18 @@ class ItemDB {
                   )''',
             ));
 
-    // print('ItemDB opened (db = $_db)');
+    print('ItemDB opened (db = $_db)');
   }
-
-  Future<List<Item>> fetchItems() async {
+  
+  Future<List<Item>> fetchItems(int listId) async {
     if (_db == null) {
       return [];
     }
 
     try {
-      final read = await _db!.query('ITEMS',
+      final read = await _db!.query('ITEMS', 
+          where: 'LIST_ID = ?', 
+          whereArgs: [listId],
           distinct: true,
           columns: [
             'ID',
@@ -57,21 +59,21 @@ class ItemDB {
 
 
       return read.map((row) {
-        // print(row);
+        print(row);
         return Item.fromRow(row);
       }).toList();
     } catch (e) {
-      // print('Error fetching items = $e');
+      print('Error fetching items = $e');
       return [];
     }
   }
 
   Future<bool> create(Item item) async {
-    // print('Creating Item (db = $_db)');
+    print('Creating Item (db = $_db)');
 
     final db = _db;
     if (db == null) {
-      // print('Item database is null');
+      print('Item database is null');
       return false;
     }
 
@@ -86,9 +88,9 @@ class ItemDB {
         'ADDED_DATE': item.addedDate,
         'IS_CHECKED': item.isChecked,
       });
-      // print('Item created');
+      print('Item created');
     } catch (e) {
-      // print('Error in creating Item = $e');
+      print('Error in creating Item = $e');
       return false;
     }
 
@@ -115,7 +117,7 @@ class ItemDB {
       ); 
       return true;
     } catch (e) {
-      // print('Failed to update item, error = $e');
+      print('Failed to update item, error = $e');
       return false;
     }
   }
@@ -134,7 +136,7 @@ class ItemDB {
       );
       return true;
     } catch (e) {
-      // print('Item deletion failed with error $e');
+      print('Item deletion failed with error $e');
       return false;
     }
   }

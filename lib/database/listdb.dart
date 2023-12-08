@@ -14,18 +14,18 @@ class ListDB {
 
   Future<void> open(String path) async {
     var databasesPath = await getDatabasesPath();
-    // print('Opening ListDB at $databasesPath/$path');
+    print('Opening ListDB at $databasesPath/$path');
 
     _db = await openDatabase('$databasesPath/$path',
         version: 1,
         onCreate: (db, version) => db.execute(
               '''CREATE TABLE IF NOT EXISTS LISTS (
                     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                    NAME STRING NOT NULL,
+                    NAME STRING NOT NULL
                   )''',
             ));
 
-    // print('ListDB opened (db = $_db)');
+    print('ListDB opened (db = $_db)');
   }
   
   Future<List<ItemList>> fetchItemLists() async {
@@ -40,25 +40,25 @@ class ListDB {
             'ID',
             'NAME',
           ],
-          orderBy: 'ID');
+          orderBy: 'NAME');
 
 
       return read.map((row) {
-        // print(row);
+        print(row);
         return ItemList.fromRow(row);
       }).toList();
     } catch (e) {
-      // print('Error fetching lists = $e');
+      print('Error fetching lists = $e');
       return [];
     }
   }
 
   Future<bool> create(ItemList list) async {
-    // print('Creating List (db = $_db)');
+    print('Creating List (db = $_db)');
 
     final db = _db;
     if (db == null) {
-      // print('List database is null');
+      print('List database is null');
       return false;
     }
 
@@ -67,9 +67,9 @@ class ListDB {
         'ID': list.id,
         'NAME': list.name,
       });
-      // print('List created');
+      print('List created');
     } catch (e) {
-      // print('Error in creating List = $e');
+      print('Error in creating List = $e');
       return false;
     }
 
@@ -91,7 +91,7 @@ class ListDB {
       ); 
       return true;
     } catch (e) {
-      // print('Failed to update list, error = $e');
+      print('Failed to update list, error = $e');
       return false;
     }
   }
@@ -110,7 +110,7 @@ class ListDB {
       );
       return true;
     } catch (e) {
-      // print('List deletion failed with error $e');
+      print('List deletion failed with error $e');
       return false;
     }
   }

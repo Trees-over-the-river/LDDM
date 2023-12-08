@@ -6,9 +6,11 @@ import 'package:pricely/pages/lists_page.dart';
 import 'package:pricely/pages/login.dart';
 import 'package:pricely/pages/about.dart';
 import 'package:pricely/widgets/item_dialog.dart';
+import 'package:pricely/widgets/create_lists_dialog.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'model/item.dart';
+import 'model/list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,12 +21,12 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final ItemDB itemDB = ItemDB.open('itemdb.sqlite');
   final ListDB listDB = ListDB.open('listdb.sqlite');
+  final ItemDB itemDB = ItemDB.open('itemdb.sqlite');
 
   MyApp({super.key});
 
-  // This widget is the root of your application.
+// This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const Login(),
         '/lists': (context) => const ListsPage(),
-        '/items': (context) => const ItemListPage(),
+        // '/items': (context) => const ItemListPage(),
         '/about': (context) => const AboutPage(),
       },
       onGenerateRoute: (settings) {
@@ -50,6 +52,21 @@ class MyApp extends StatelessWidget {
           final isNew = (settings.arguments! as List)[1] as bool;
 
           return ItemDialog(item, isNew).route;
+        } else if (settings.name == '/list') {
+          if (settings.arguments == null) {
+            return CreateListsDialog(ItemList.empty()).route;
+          }
+          final list = (settings.arguments! as List)[0] as ItemList;
+
+          return CreateListsDialog(list).route;
+        } else if (settings.name == '/items') {
+          if (settings.arguments != null) {
+            final listId = settings.arguments as int; // Supondo que você passará o ID da lista como um argumento
+
+            return MaterialPageRoute(
+              builder: (context) => ItemListPage(title: 'Nome da Lista', listId: listId),
+            );
+          }
         }
         return null;
       },

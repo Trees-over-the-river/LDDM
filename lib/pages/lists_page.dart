@@ -1,9 +1,9 @@
-import 'dart:math';
-
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:pricely/database/itemdb.dart';
+import 'package:pricely/database/listdb.dart';
 import 'package:pricely/model/item.dart';
-import 'package:pricely/widgets/create_lists_dialog.dart';
+import 'package:pricely/model/list.dart';
 import 'package:pricely/widgets/list_griditem_widget.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -15,27 +15,29 @@ class ListsPage extends StatefulWidget {
 }
 
 class _ListsPageState extends State<ListsPage> {
-  List<Widget> tiles = List.generate(
-    10,
-    (listi) => LimitedBox(
-      maxHeight: 200,
-      maxWidth: 200,
-      child: ListGriditemWidget(
-        List.generate(
-          10,
-          (index) => Item((index + listi * 10),
-              name: 'Item ${index + listi * 10}',
-              amount: Random().nextInt(1000),
-              amountUnit: AmountUnit.none,
-              image: CachedNetworkImageProvider(
-                  'https://picsum.photos/seed/${index + listi * 100}/200/200',
-                  cacheKey: 'item_${index + listi * 100}'),
-              description: 'Description ${index + listi * 10}'),
-        ),
-        title: "List $listi",
-      ),
-    ),
-  );
+  final ListDB _listDB = ListDB();
+  final ItemDB _itemDB = ItemDB();
+
+  late final Timer _timer;
+  List<ItemList> _lists = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer t) => _listDB.fetchItemLists().then((value) => setState(() {
+            _lists = value;
+          })),
+    );
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +68,29 @@ class _ListsPageState extends State<ListsPage> {
           runSpacing: 8,
           onReorder: _onReorder,
           enableReorder: false,
-          children: tiles,
+          children: _lists.map<Widget>((list) {
+            return LimitedBox(
+              maxHeight: 200,
+              maxWidth: 200,
+              child: FutureBuilder<List<Item>>(
+                future: _itemDB.fetchItems(list.id), // Busca os itens correspondentes à lista
+                builder: (context, snapshot) {
+                  return ListGriditemWidget(
+                    const [],
+                    title: list.name,
+                    listId: list.id,
+                  );
+                },
+              ),
+            );
+          }).toList(),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(
-            context: context, builder: (context) => const CreateListsDialog()),
+        onPressed: () async {
+          Navigator.of(context)
+              .pushNamed('/list', arguments: [ItemList.empty()]);
+        },
         child: const Icon(Icons.add),
       ),
     );
@@ -79,8 +98,8 @@ class _ListsPageState extends State<ListsPage> {
 
   void _onReorder(oldIndex, newIndex) {
     setState(() {
-      final item = tiles.removeAt(oldIndex);
-      tiles.insert(newIndex, item);
+      final ItemList list = _lists.removeAt(oldIndex);
+      _lists.insert(newIndex, list);
     });
   }
 }

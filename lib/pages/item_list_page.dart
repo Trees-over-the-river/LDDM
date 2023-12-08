@@ -6,19 +6,20 @@ import 'package:pricely/model/item.dart';
 import 'package:pricely/widgets/item_widget.dart';
 
 class ItemListPage extends StatefulWidget {
-  const ItemListPage({Key? key, this.title = "Nome da Lista"}) : super(key: key); // TODO: pegar nome da lista
+  const ItemListPage({Key? key, required this.title, required this.listId}) : super(key: key);
 
   final String title;
+  final int listId;
 
   @override
   State<ItemListPage> createState() => _ItemListPageState();
 }
 
 class _ItemListPageState extends State<ItemListPage> {
-  final _items = <Item>[];
-  final _checkedItems = <Item>[];
+  final List<Item> _items = [];
+  final List<Item> _checkedItems = [];
 
-  final ItemDB _crudPricely = ItemDB();
+  final ItemDB _itemDB = ItemDB();
   late final Timer _timer;
 
   @override
@@ -26,13 +27,13 @@ class _ItemListPageState extends State<ItemListPage> {
     super.initState();
 
     _timer = Timer.periodic(
-        const Duration(seconds: 1),
-        (Timer t) => _crudPricely.fetchItems().then((value) => setState(() {
-              _items.clear();
-              _checkedItems.clear();
-              _items.addAll(value.where((element) => !element.isChecked));
-              _checkedItems.addAll(value.where((element) => element.isChecked));
-            })));
+      const Duration(seconds: 1),
+      (Timer t) => _itemDB.fetchItems(widget.listId).then((value) => setState(() {
+        _items.clear();
+        _checkedItems.clear();
+        _items.addAll(value.where((element) => !element.isChecked));
+        _checkedItems.addAll(value.where((element) => element.isChecked));
+      })));
   }
 
   @override
@@ -49,12 +50,12 @@ class _ItemListPageState extends State<ItemListPage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-              onPressed: () {
-                FlutterContacts.openExternalPick();
-              },
-              icon: const Icon(Icons.share),
-              color: Colors.black,
-            ),
+            onPressed: () {
+              FlutterContacts.openExternalPick();
+            },
+            icon: const Icon(Icons.share),
+            color: Colors.black,
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -73,7 +74,7 @@ class _ItemListPageState extends State<ItemListPage> {
                     var item = _items.removeAt(index);
                     item.isChecked = true;
                     _checkedItems.add(item);
-                    ItemDB().update(item);
+                    _itemDB.update(item);
                   });
                 },
                 onDelete: () {
@@ -81,10 +82,10 @@ class _ItemListPageState extends State<ItemListPage> {
 
                   setState(() {
                     item = _items.removeAt(index);
-                    ItemDB().delete(item);
+                    _itemDB.delete(item);
                   });
 
-                  //Undo delete
+//Undo delete
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: const Text('Item removido'),
@@ -92,7 +93,7 @@ class _ItemListPageState extends State<ItemListPage> {
                         label: 'Desfazer',
                         onPressed: () {
                           setState(() {
-                            ItemDB().create(item);
+                            _itemDB.create(item);
                             _items.insert(index, item);
                           });
                         },
@@ -127,7 +128,7 @@ class _ItemListPageState extends State<ItemListPage> {
                     var item = _checkedItems.removeAt(index);
                     item.isChecked = false;
                     _items.add(item);
-                    ItemDB().update(item);
+                    _itemDB.update(item);
                   });
                 },
                 onDelete: () {
@@ -144,7 +145,7 @@ class _ItemListPageState extends State<ItemListPage> {
                         label: 'Desfazer',
                         onPressed: () {
                           setState(() {
-                            ItemDB().create(item);
+                            _itemDB.create(item);
                             _checkedItems.insert(index, item);
                           });
                         },

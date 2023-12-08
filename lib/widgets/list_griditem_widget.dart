@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pricely/model/item.dart';
+import 'package:pricely/pages/item_list_page.dart';
 
 class ListGriditemWidget extends StatefulWidget {
-  const ListGriditemWidget(this.items, {Key? key, this.title = ''})
+  const ListGriditemWidget(this.items, {Key? key, this.title = '', required this.listId})
       : super(key: key);
 
   final String title;
   final List<Item> items;
+  final int listId; // Adicionando listId como um novo parâmetro
 
   @override
   createState() => _ListGriditemWidgetState();
@@ -17,7 +19,15 @@ class _ListGriditemWidgetState extends State<ListGriditemWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/items', arguments: widget.items);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ItemListPage(
+              title: widget.title, // Passando o título
+              listId: widget.listId, // Passando o ID da lista
+            ),
+          ),
+        );
       },
       child: Card(
         child: Column(
