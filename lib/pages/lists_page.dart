@@ -31,8 +31,8 @@ class _ListsPageState extends State<ListsPage> {
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (Timer t) => _listDB.fetchItemLists().then((value) => setState(() {
-            _lists = value;
-          })),
+        _lists = value;
+      })),
     );
   }
 
@@ -75,32 +75,7 @@ class _ListsPageState extends State<ListsPage> {
             final int index = entry.key;
             final ItemList list = entry.value;
 
-            return Dismissible(
-              key: UniqueKey(),
-              onDismissed: (direction) {
-                _removeList(list, index);
-              },
-              background: Container(
-                color: Colors.red,
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.only(right: 20.0),
-                child: const Icon(Icons.delete, color: Colors.black),
-              ),
-              child: LimitedBox(
-                maxHeight: 200,
-                maxWidth: 200,
-                child: FutureBuilder<List<Item>>(
-                  future: _itemDB.fetchItems(list.id), // Busca os itens correspondentes à lista
-                  builder: (context, snapshot) {
-                    return ListGriditemWidget(
-                      const [],
-                      title: list.name,
-                      listId: list.id,
-                    );
-                  },
-                ),
-              ),
-            );
+            return _buildListDismissible(list, index);
           }).toList(),
         ),
       ),
@@ -113,14 +88,46 @@ class _ListsPageState extends State<ListsPage> {
     );
   }
 
-  void _onReorder(oldIndex, newIndex) {
-    setState(() {
-      final ItemList list = _lists.removeAt(oldIndex);
-      _lists.insert(newIndex, list);
-    });
+  Widget _buildListDismissible(ItemList list, int index) {
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        if (direction == DismissDirection.startToEnd) {
+          _editListName(list); // Editar nome da lista
+        } else if (direction == DismissDirection.endToStart) {
+          _removeList(list, index); // Remover lista
+        }
+      },
+      background: Container(
+        color: Colors.yellow,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20.0),
+        child: const Icon(Icons.edit, color: Colors.black),
+      ),
+      secondaryBackground: Container(
+        color: Colors.red,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20.0),
+        child: const Icon(Icons.delete, color: Colors.black),
+      ),
+      child: LimitedBox(
+        maxHeight: 200,
+        maxWidth: 200,
+        child: FutureBuilder<List<Item>>(
+          future: _itemDB.fetchItems(list.id), // Busca os itens correspondentes à lista
+          builder: (context, snapshot) {
+            return ListGriditemWidget(
+              const [],
+              title: list.name,
+              listId: list.id,
+            );
+          },
+        ),
+      ),
+    );
   }
 
-  Future<void> _removeList(ItemList list, int index) async {
+  void _removeList(ItemList list, int index) async {
     // Armazena temporariamente a lista removida para desfazer
     setState(() {
       _lastRemoved = list;
@@ -140,8 +147,6 @@ class _ListsPageState extends State<ListsPage> {
         ),
       ),
     );
-
-    await _listDB.delete(list);
   }
 
   void _undoRemove() {
@@ -153,6 +158,63 @@ class _ListsPageState extends State<ListsPage> {
         _lastRemoved = null;
         _lastRemovedIndex = null;
       }
+    });
+  }
+
+  void _editListName(ItemList list) {
+    TextEditingController controller = TextEditingController(text: list.name);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Editar Nome', style: TextStyle(fontSize: 30)),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  labelText: 'Nome da Lista',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancelar'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      String newName = controller.text;
+                      // Atualiza o nome da lista no banco de dados
+                      _listDB.update(ItemList(list.id, name: newName));
+
+                      setState(() {
+                        list.name = newName;
+                      });
+
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Salvar'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _onReorder(oldIndex, newIndex) {
+    setState(() {
+      final ItemList list = _lists.removeAt(oldIndex);
+      _lists.insert(newIndex, list);
     });
   }
 }

@@ -89,6 +89,7 @@ class ListDB {
       where: 'ID = ?',
       whereArgs: [list.id],
       ); 
+      print('List updated');
       return true;
     } catch (e) {
       print('Failed to update list, error = $e');
