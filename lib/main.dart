@@ -17,16 +17,37 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  final ListDB listDB = ListDB.open('listdb.sqlite');
-  final ItemDB itemDB = ItemDB.open('itemdb.sqlite');
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  MyApp({super.key});
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
 
-// This widget is the root of your application.
+class _MyAppState extends State<MyApp> {
+  late ListDB listDB;
+  late ItemDB itemDB;
+  bool databasesOpened = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeDatabases();
+  }
+
+  Future<void> _initializeDatabases() async {
+    listDB = ListDB();
+    itemDB = ItemDB();
+    await listDB.open('listdb.sqlite');
+    await itemDB.open('itemdb.sqlite');
+    setState(() {
+      databasesOpened = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -76,7 +97,7 @@ class MyApp extends StatelessWidget {
         }
         return null;
       },
-      home: const ListsPage(),
+      home: databasesOpened ? const ListsPage() : const CircularProgressIndicator(),
     );
   }
 }

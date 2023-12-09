@@ -4,7 +4,7 @@ import 'package:pricely/model/list.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ListDB {
-  static Database? _db;
+  static late Database _db;
 
   ListDB();
 
@@ -29,18 +29,13 @@ class ListDB {
   }
   
   Future<List<ItemList>> fetchItemLists() async {
-    if (_db == null) {
-      return [];
-    }
-
     try {
-      final read = await _db!.query('LISTS',
+      final read = await _db.query('LISTS',
           distinct: true,
           columns: [
             'ID',
             'NAME',
-          ],
-          orderBy: 'NAME');
+          ]);
 
 
       return read.map((row) {
@@ -57,11 +52,7 @@ class ListDB {
     print('Creating List (db = $_db)');
 
     final db = _db;
-    if (db == null) {
-      print('List database is null');
-      return false;
-    }
-
+    
     try {
       await db.insert('LISTS', {
         'ID': list.id,
@@ -78,10 +69,7 @@ class ListDB {
 
   Future<bool> update(ItemList list) async {
     final db = _db;
-    if(db == null) {
-      return false;
-    }
-
+    
     try {
       db.update('LISTS', {
         'NAME': list.name,
@@ -99,10 +87,7 @@ class ListDB {
 
   Future<bool> delete(ItemList list) async {
     final db = _db;
-    if (db == null) {
-      return false;
-    }
-
+    
     try {
       db.delete(
         'LISTS',
@@ -119,10 +104,7 @@ class ListDB {
 
   Future<bool> close() async {
     final db = _db;
-    if (db == null) {
-      return false;
-    }
-
+   
     await db.close();
     return true;
   }

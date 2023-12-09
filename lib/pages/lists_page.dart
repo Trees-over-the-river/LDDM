@@ -15,11 +15,10 @@ class ListsPage extends StatefulWidget {
 }
 
 class _ListsPageState extends State<ListsPage> {
+  List<ItemList> _lists = [];
+
   final ListDB _listDB = ListDB();
   final ItemDB _itemDB = ItemDB();
-
-  late final Timer _timer;
-  List<ItemList> _lists = [];
 
   ItemList? _lastRemoved;
   int? _lastRemovedIndex;
@@ -27,19 +26,14 @@ class _ListsPageState extends State<ListsPage> {
   @override
   void initState() {
     super.initState();
-
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (Timer t) => _listDB.fetchItemLists().then((value) => setState(() {
-        _lists = value;
-      })),
-    );
+    _loadListsFromDB();
   }
 
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
+  Future<void> _loadListsFromDB() async {
+    final lists = await _listDB.fetchItemLists();
+    setState(() {
+      _lists = lists;
+    });
   }
 
   @override
@@ -81,7 +75,9 @@ class _ListsPageState extends State<ListsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          Navigator.of(context).pushNamed('/list', arguments: [ItemList.empty()]);
+          await Navigator.of(context).pushNamed('/list', arguments: [ItemList.empty()]);
+
+          _loadListsFromDB();
         },
         child: const Icon(Icons.add),
       ),
@@ -192,10 +188,10 @@ class _ListsPageState extends State<ListsPage> {
                     onPressed: () async {
                       String newName = controller.text;
                       // Atualiza o nome da lista no banco de dados
-                      _listDB.update(ItemList(list.id, name: newName));
-
-                      setState(() {
-                        list.name = newName;
+                      _listDB.update(ItemList(list.id, name: newName)).then((_) {
+                        setState(() {
+                          list.name = newName;
+                        });
                       });
 
                       Navigator.pop(context);

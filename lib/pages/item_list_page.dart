@@ -16,30 +16,24 @@ class ItemListPage extends StatefulWidget {
 }
 
 class _ItemListPageState extends State<ItemListPage> {
-  final List<Item> _items = [];
-  final List<Item> _checkedItems = [];
+  List<Item> _items = [];
+  List<Item> _checkedItems = [];
 
   final ItemDB _itemDB = ItemDB();
-  late final Timer _timer;
 
   @override
   void initState() {
     super.initState();
-
-    _timer = Timer.periodic(
-        const Duration(seconds: 1),
-        (Timer t) => _itemDB.fetchItems(widget.listId).then((value) => setState(() {
-                  _items.clear();
-                  _checkedItems.clear();
-                  _items.addAll(value.where((element) => !element.isChecked));
-                  _checkedItems.addAll(value.where((element) => element.isChecked));
-                })));
+    _loadItemsFromDB();
   }
 
   @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
+  void didUpdateWidget(covariant ItemListPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Se o ID da lista mudar (ou seja, se a tela for exibida novamente com uma lista diferente), recarregue os itens.
+    if (widget.listId != oldWidget.listId) {
+      _loadItemsFromDB();
+    }
   }
 
   @override
@@ -67,8 +61,12 @@ class _ItemListPageState extends State<ItemListPage> {
               itemBuilder: (context, index) => ItemWidget(
                 _items[index],
                 key: ValueKey(_items[index].id),
-                onTap: () => Navigator.of(context)
-                    .pushNamed('/item', arguments: [_items[index], false, widget.listId, widget.listId]),
+                onTap: () async {
+                  await Navigator.of(context).pushNamed('/item', arguments: [_items[index], false, widget.listId]);
+
+                  // Recarrega a lista de itens após o fechamento do ItemDialog
+                  _loadItemsFromDB();
+                },
                 onCheck: () {
                   setState(() {
                     var item = _items.removeAt(index);
@@ -104,13 +102,9 @@ class _ItemListPageState extends State<ItemListPage> {
                 checked: false,
               ),
               itemCount: _items.length,
-              onReorder: (oldIndex, newIndex) => setState(() {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
-                }
-                final item = _items.removeAt(oldIndex);
-                _items.insert(newIndex, item);
-              }),
+              onReorder: (oldIndex, newIndex) {
+                _reorderItems(false, oldIndex, newIndex);
+              },
             ),
             const Divider(
               thickness: 8,
@@ -136,6 +130,7 @@ class _ItemListPageState extends State<ItemListPage> {
 
                   setState(() {
                     item = _checkedItems.removeAt(index);
+                    _itemDB.delete(item, widget.listId);
                   });
 
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -156,24 +151,52 @@ class _ItemListPageState extends State<ItemListPage> {
                 checked: true,
               ),
               itemCount: _checkedItems.length,
-              onReorder: (oldIndex, newIndex) => setState(() {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
-                }
-                final item = _checkedItems.removeAt(oldIndex);
-                _checkedItems.insert(newIndex, item);
-              }),
+              onReorder: (oldIndex, newIndex) {
+                _reorderItems(true, oldIndex, newIndex);
+              },
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          Navigator.of(context)
-              .pushNamed('/item', arguments: [Item.empty(), true, widget.listId]);
+          await Navigator.of(context).pushNamed('/item', arguments: [Item.empty(), true, widget.listId]);
+
+          // Recarrega a lista de itens após o fechamento do ItemDialog
+          _loadItemsFromDB();
         },
         child: const Icon(Icons.add),
       ),
     );
   }
+
+  Future<void> _loadItemsFromDB() async {
+    final items = await _itemDB.fetchItems(widget.listId);
+    setState(() {
+      _items = items.where((element) => !element.isChecked).toList();
+      _checkedItems = items.where((element) => element.isChecked).toList();
+    });
+  }
+
+  void _reorderItems(bool isChecked, int oldIndex, int newIndex) async {
+    setState(() {
+      List<Item> itemList = isChecked ? _checkedItems : _items;
+
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+      final Item item = itemList.removeAt(oldIndex);
+      itemList.insert(newIndex, item);
+
+      _itemDB.updateAll(itemList, widget.listId).then((_) {
+        setState(() {
+          if (isChecked) {
+            _checkedItems = List.from(itemList);
+          } else {
+            _items = List.from(itemList);
+          }
+        });
+      });
+    });
+  } 
 }

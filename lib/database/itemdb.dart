@@ -4,7 +4,7 @@ import 'package:pricely/model/item.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ItemDB {
-  static Database? _db;
+  static late Database _db;
 
   ItemDB();
 
@@ -37,12 +37,8 @@ class ItemDB {
   }
   
   Future<List<Item>> fetchItems(int listId) async {
-    if (_db == null) {
-      return [];
-    }
-
     try {
-      final read = await _db!.query('ITEMS', 
+      final read = await _db.query('ITEMS', 
           where: 'LIST_ID = ?', 
           whereArgs: [listId],
           distinct: true,
@@ -54,8 +50,7 @@ class ItemDB {
             'AMOUNT',
             'AMOUNT_UNIT',
             'IS_CHECKED',
-          ],
-          orderBy: 'ID');
+          ]);
 
 
       return read.map((row) {
@@ -72,11 +67,7 @@ class ItemDB {
     print('Creating Item (db = $_db)');
     
     final db = _db;
-    if (db == null) {
-      print('Item database is null');
-      return false;
-    }
-
+   
     try {
       await db.insert('ITEMS', {
         'ID': item.id,
@@ -99,10 +90,7 @@ class ItemDB {
 
   Future<bool> update(Item item, int listId) async {
     final db = _db;
-    if(db == null) {
-      return false;
-    }
-
+    
     try {
       db.update('ITEMS', {
         'NAME': item.name,
@@ -124,10 +112,7 @@ class ItemDB {
 
   Future<bool> delete(Item item, int listId) async {
     final db = _db;
-    if (db == null) {
-      return false;
-    }
-
+   
     try {
       db.delete(
         'ITEMS',
@@ -142,12 +127,46 @@ class ItemDB {
     }
   }
 
-  Future<bool> close() async {
+  Future<bool> updateAll(List<Item> items, int listId) async {
     final db = _db;
-    if (db == null) {
+   
+    try {
+      await db.transaction((txn) async {
+        for (var i = 0; i < items.length; i++) {
+          final item = items[i];
+          await txn.rawUpdate(
+            'UPDATE ITEMS SET '
+            'NAME = ?, '
+            'DESCRIPTION = ?, '
+            'AMOUNT = ?, '
+            'AMOUNT_UNIT = ?, '
+            'ADDED_DATE = ?, '
+            'IS_CHECKED = ? '
+            'WHERE LIST_ID = ? AND ID = ?',
+            [
+              item.name,
+              item.description,
+              item.amount,
+              item.amountUnit.index,
+              item.addedDate,
+              item.isChecked ? 1 : 0,
+              listId,
+              item.id,
+            ],
+          );
+        }
+      });
+
+      return true;
+    } catch (e) {
+      print('Failed to update items, error = $e');
       return false;
     }
+  }
 
+  Future<bool> close() async {
+    final db = _db;
+    
     await db.close();
     return true;
   }
