@@ -108,6 +108,7 @@ class ListDB {
         where: 'ID = ?',
         whereArgs: [list.id],
       );
+      print('List deleted');
       return true;
     } catch (e) {
       print('List deletion failed with error $e');

@@ -21,6 +21,9 @@ class _ListsPageState extends State<ListsPage> {
   late final Timer _timer;
   List<ItemList> _lists = [];
 
+  ItemList? _lastRemoved;
+  int? _lastRemovedIndex;
+
   @override
   void initState() {
     super.initState();
@@ -68,19 +71,34 @@ class _ListsPageState extends State<ListsPage> {
           runSpacing: 8,
           onReorder: _onReorder,
           enableReorder: false,
-          children: _lists.map<Widget>((list) {
-            return LimitedBox(
-              maxHeight: 200,
-              maxWidth: 200,
-              child: FutureBuilder<List<Item>>(
-                future: _itemDB.fetchItems(list.id), // Busca os itens correspondentes à lista
-                builder: (context, snapshot) {
-                  return ListGriditemWidget(
-                    const [],
-                    title: list.name,
-                    listId: list.id,
-                  );
-                },
+          children: _lists.asMap().entries.map<Widget>((entry) {
+            final int index = entry.key;
+            final ItemList list = entry.value;
+
+            return Dismissible(
+              key: UniqueKey(),
+              onDismissed: (direction) {
+                _removeList(list, index);
+              },
+              background: Container(
+                color: Colors.red,
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(right: 20.0),
+                child: const Icon(Icons.delete, color: Colors.black),
+              ),
+              child: LimitedBox(
+                maxHeight: 200,
+                maxWidth: 200,
+                child: FutureBuilder<List<Item>>(
+                  future: _itemDB.fetchItems(list.id), // Busca os itens correspondentes à lista
+                  builder: (context, snapshot) {
+                    return ListGriditemWidget(
+                      const [],
+                      title: list.name,
+                      listId: list.id,
+                    );
+                  },
+                ),
               ),
             );
           }).toList(),
@@ -88,8 +106,7 @@ class _ListsPageState extends State<ListsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          Navigator.of(context)
-              .pushNamed('/list', arguments: [ItemList.empty()]);
+          Navigator.of(context).pushNamed('/list', arguments: [ItemList.empty()]);
         },
         child: const Icon(Icons.add),
       ),
@@ -100,6 +117,42 @@ class _ListsPageState extends State<ListsPage> {
     setState(() {
       final ItemList list = _lists.removeAt(oldIndex);
       _lists.insert(newIndex, list);
+    });
+  }
+
+  Future<void> _removeList(ItemList list, int index) async {
+    // Armazena temporariamente a lista removida para desfazer
+    setState(() {
+      _lastRemoved = list;
+      _lastRemovedIndex = index;
+      _lists.removeAt(index);
+      _listDB.delete(list);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Lista removida'),
+        action: SnackBarAction(
+          label: 'Desfazer',
+          onPressed: () {
+            _undoRemove();
+          },
+        ),
+      ),
+    );
+
+    await _listDB.delete(list);
+  }
+
+  void _undoRemove() {
+    // Restaura a lista removida
+    setState(() {
+      if (_lastRemoved != null && _lastRemovedIndex != null) {
+        _lists.insert(_lastRemovedIndex!, _lastRemoved!);
+        _listDB.create(_lastRemoved!);
+        _lastRemoved = null;
+        _lastRemovedIndex = null;
+      }
     });
   }
 }
