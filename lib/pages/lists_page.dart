@@ -16,12 +16,10 @@ class ListsPage extends StatefulWidget {
 
 class _ListsPageState extends State<ListsPage> {
   List<ItemList> _lists = [];
+  final List<ItemList> _removedLists = []; // Lista para armazenar listas removidas
 
   final ListDB _listDB = ListDB();
   final ItemDB _itemDB = ItemDB();
-
-  ItemList? _lastRemoved;
-  int? _lastRemovedIndex;
 
   @override
   void initState() {
@@ -126,8 +124,7 @@ class _ListsPageState extends State<ListsPage> {
   void _removeList(ItemList list, int index) async {
     // Armazena temporariamente a lista removida para desfazer
     setState(() {
-      _lastRemoved = list;
-      _lastRemovedIndex = index;
+      _removedLists.add(list);
       _lists.removeAt(index);
       _listDB.delete(list);
     });
@@ -138,21 +135,19 @@ class _ListsPageState extends State<ListsPage> {
         action: SnackBarAction(
           label: 'Desfazer',
           onPressed: () {
-            _undoRemove();
+            _undoRemoveList();
           },
         ),
       ),
     );
   }
 
-  void _undoRemove() {
-    // Restaura a lista removida
+  void _undoRemoveList() {
     setState(() {
-      if (_lastRemoved != null && _lastRemovedIndex != null) {
-        _lists.insert(_lastRemovedIndex!, _lastRemoved!);
-        _listDB.create(_lastRemoved!);
-        _lastRemoved = null;
-        _lastRemovedIndex = null;
+      if (_removedLists.isNotEmpty) {
+        final removedList = _removedLists.removeLast(); // Remove a última lista removida
+        _lists.add(removedList);
+        _listDB.create(removedList);
       }
     });
   }
@@ -179,8 +174,10 @@ class _ListsPageState extends State<ListsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.pop(context);
+
+                      _loadListsFromDB();
                     },
                     child: const Text('Cancelar'),
                   ),

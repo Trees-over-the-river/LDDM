@@ -11,44 +11,60 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.primary),
-      body: CustomPaint(
-        painter: TrianglePainter(
-          height: MediaQuery.of(context).size.height / 4,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 50,
-                bottom: MediaQuery.of(context).padding.bottom + 50,
-                left: 50,
-                right: 50),
-            child: Column(
-              children: [
-                Text('Pricely',
+      body: Stack(
+        children: [
+          CustomPaint(
+            painter: TrianglePainter(
+              height: MediaQuery.of(context).size.height / 4,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            child: Container(),
+          ),
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 90),
+                  Text(
+                    'Pricely',
                     style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                        fontFamily: 'Pacifico',
-                        color: Colors.green,
-                        fontSize: 80),
-                    textAlign: TextAlign.center),
-                const SizedBox(height: 50),
-                Form(
-                  child: Column(
-                    children: [
-                      Text(
-                        'O Pricely tem como objetivo facilitar o dia a dia dos usuários ao oferecer uma forma mais rápida e fácil de manter e organizar suas listas de compras. Nele, você poderá criar várias listas, adicionando, deletando e concluindo items delas, além de poder compartilhar uma lista com seus contatos que também estão usando o app para que todos possam editá-la.\nEste aplicativo foi desenvolvido na disciplina de Laboratório de Desenvolvimento para Dispositivos Móveis por alunos de Ciência da Computação da PUC Minas.',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontStyle: FontStyle.normal,
-                            ),
-                      ),
-                    ],
+                          fontFamily: 'Pacifico',
+                          color: Colors.green,
+                          fontSize: 80,
+                        ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'O Pricely é a sua solução completa para listas de compras inteligentes e compartilhadas. Simplificamos a maneira como você gerencia suas compras diárias, permitindo criar, organizar e compartilhar suas listas com facilidade.\n\nCrie várias listas, adicione ou remova itens, marque itens como concluídos e convide seus contatos para colaborar nas listas compartilhadas. Tudo em um só lugar!',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Image(
+                      image: AssetImage('assets/logoPUC.jpg'),
+                      width: 120,  
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'Aplicativo desenvolvido por alunos do 4° período de Ciência da Computação na PUC Minas Coração Eucarístico como trabalho da disciplina Laboratório de Desenvolvimento para Dispositivos Móveis.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
