@@ -50,6 +50,12 @@ class _CreateListsDialogState extends State<CreateListsDialog> {
               TextFormField(
                 initialValue: _list.name,
                 onSaved: (newValue) => _list.name = newValue!,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Nome da lista não pode ser vazio';
+                  }
+                  return null;
+                },
                 decoration: const InputDecoration(
                     labelText: 'Nome da Lista', border: OutlineInputBorder()),
               ),
@@ -57,6 +63,9 @@ class _CreateListsDialogState extends State<CreateListsDialog> {
               TextFormField(
                 initialValue: _list.description,
                 onSaved: (newValue) => _list.description = newValue!,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                minLines: 1,
                 decoration: const InputDecoration(
                     labelText: 'Descrição', border: OutlineInputBorder()),
               ),

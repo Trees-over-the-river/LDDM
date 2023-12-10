@@ -6,7 +6,8 @@ import 'package:pricely/model/item.dart';
 import 'package:pricely/widgets/item_widget.dart';
 
 class ItemListPage extends StatefulWidget {
-  const ItemListPage({Key? key, required this.title, required this.listId}) : super(key: key);
+  const ItemListPage({Key? key, required this.title, required this.listId})
+      : super(key: key);
 
   final String title;
   final int listId;
@@ -42,15 +43,6 @@ class _ItemListPageState extends State<ItemListPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
-        actions: [
-          IconButton(
-            onPressed: () {
-              FlutterContacts.openExternalPick();
-            },
-            icon: const Icon(Icons.share),
-            color: Colors.black,
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -62,7 +54,8 @@ class _ItemListPageState extends State<ItemListPage> {
                 _items[index],
                 key: ValueKey(_items[index].id),
                 onTap: () async {
-                  await Navigator.of(context).pushNamed('/item', arguments: [_items[index], false, widget.listId]);
+                  await Navigator.of(context).pushNamed('/item',
+                      arguments: [_items[index], false, widget.listId]);
 
                   // Recarrega a lista de itens após o fechamento do ItemDialog
                   _loadItemsFromDB();
@@ -116,7 +109,8 @@ class _ItemListPageState extends State<ItemListPage> {
                 _checkedItems[index],
                 key: ValueKey(_checkedItems[index].id),
                 onTap: () async {
-                  await Navigator.of(context).pushNamed('/item', arguments: [_checkedItems[index], false, widget.listId]);
+                  await Navigator.of(context).pushNamed('/item',
+                      arguments: [_checkedItems[index], false, widget.listId]);
 
                   // Recarrega a lista de itens após o fechamento do ItemDialog
                   _loadItemsFromDB();
@@ -164,7 +158,8 @@ class _ItemListPageState extends State<ItemListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.of(context).pushNamed('/item', arguments: [Item.empty(), true, widget.listId]);
+          await Navigator.of(context).pushNamed('/item',
+              arguments: [Item.empty(), true, widget.listId]);
 
           // Recarrega a lista de itens após o fechamento do ItemDialog
           _loadItemsFromDB();
@@ -202,5 +197,5 @@ class _ItemListPageState extends State<ItemListPage> {
         });
       });
     });
-  } 
+  }
 }

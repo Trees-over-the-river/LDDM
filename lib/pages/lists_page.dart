@@ -16,7 +16,8 @@ class ListsPage extends StatefulWidget {
 
 class _ListsPageState extends State<ListsPage> {
   List<ItemList> _lists = [];
-  final List<ItemList> _removedLists = []; // Lista para armazenar listas removidas
+  final List<ItemList> _removedLists =
+      []; // Lista para armazenar listas removidas
 
   final ListDB _listDB = ListDB();
   final ItemDB _itemDB = ItemDB();
@@ -73,7 +74,8 @@ class _ListsPageState extends State<ListsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.of(context).pushNamed('/list', arguments: [ItemList.empty()]);
+          await Navigator.of(context)
+              .pushNamed('/list', arguments: [ItemList.empty()]);
 
           _loadListsFromDB();
         },
@@ -104,19 +106,10 @@ class _ListsPageState extends State<ListsPage> {
         padding: const EdgeInsets.only(right: 20.0),
         child: const Icon(Icons.delete, color: Colors.black),
       ),
-      child: LimitedBox(
-        maxHeight: 200,
-        maxWidth: 200,
-        child: FutureBuilder<List<Item>>(
-          future: _itemDB.fetchItems(list.id), // Busca os itens correspondentes à lista
-          builder: (context, snapshot) {
-            return ListGriditemWidget(
-              const [],
-              title: list.name,
-              listId: list.id,
-            );
-          },
-        ),
+      child: SizedBox(
+        height: 120,
+        width: 120,
+        child: ListGriditemWidget(list),
       ),
     );
   }
@@ -145,7 +138,8 @@ class _ListsPageState extends State<ListsPage> {
   void _undoRemoveList() {
     setState(() {
       if (_removedLists.isNotEmpty) {
-        final removedList = _removedLists.removeLast(); // Remove a última lista removida
+        final removedList =
+            _removedLists.removeLast(); // Remove a última lista removida
         _lists.add(removedList);
         _listDB.create(removedList);
       }
@@ -154,6 +148,9 @@ class _ListsPageState extends State<ListsPage> {
 
   void _editListName(ItemList list) {
     TextEditingController controller = TextEditingController(text: list.name);
+    TextEditingController controllerDescription =
+        TextEditingController(text: list.description);
+
     showDialog(
       context: context,
       builder: (context) {
@@ -167,6 +164,17 @@ class _ListsPageState extends State<ListsPage> {
                 controller: controller,
                 decoration: const InputDecoration(
                   labelText: 'Nome da Lista',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: controllerDescription,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                minLines: 1,
+                decoration: const InputDecoration(
+                  labelText: 'Descrição',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -184,10 +192,15 @@ class _ListsPageState extends State<ListsPage> {
                   TextButton(
                     onPressed: () async {
                       String newName = controller.text;
+                      String description = controllerDescription.text;
                       // Atualiza o nome da lista no banco de dados
-                      _listDB.update(ItemList(list.id, name: newName)).then((_) {
+                      _listDB
+                          .update(ItemList(list.id,
+                              name: newName, description: description))
+                          .then((_) {
                         setState(() {
                           list.name = newName;
+                          list.description = description;
                         });
                       });
 
