@@ -115,8 +115,12 @@ class _ItemListPageState extends State<ItemListPage> {
               itemBuilder: (context, index) => ItemWidget(
                 _checkedItems[index],
                 key: ValueKey(_checkedItems[index].id),
-                onTap: () => Navigator.of(context).pushNamed('/item',
-                    arguments: [_checkedItems[index], false, widget.listId]),
+                onTap: () async {
+                  await Navigator.of(context).pushNamed('/item', arguments: [_checkedItems[index], false, widget.listId]);
+
+                  // Recarrega a lista de itens após o fechamento do ItemDialog
+                  _loadItemsFromDB();
+                },
                 onCheck: () {
                   setState(() {
                     var item = _checkedItems.removeAt(index);
