@@ -10,17 +10,17 @@ class CreateListsDialog extends StatefulWidget {
 
   //build route
   Route<CreateListsDialog> get route => PageRouteBuilder(
-    opaque: false,
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        CreateListsDialog(list),
-    barrierColor: Colors.black.withOpacity(0.5),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        FadeTransition(
-      opacity: animation,
-      child: child,
-    ),
-    barrierDismissible: true,
-  );
+        opaque: false,
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CreateListsDialog(list),
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+        barrierDismissible: true,
+      );
 
   @override
   createState() => _CreateListsDialogState();
@@ -51,9 +51,14 @@ class _CreateListsDialogState extends State<CreateListsDialog> {
                 initialValue: _list.name,
                 onSaved: (newValue) => _list.name = newValue!,
                 decoration: const InputDecoration(
-                  labelText: 'Nome da Lista',
-                  border: OutlineInputBorder()
-                ),
+                    labelText: 'Nome da Lista', border: OutlineInputBorder()),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                initialValue: _list.description,
+                onSaved: (newValue) => _list.description = newValue!,
+                decoration: const InputDecoration(
+                    labelText: 'Descrição', border: OutlineInputBorder()),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,7 +70,7 @@ class _CreateListsDialogState extends State<CreateListsDialog> {
                     child: const Text('Cancelar'),
                   ),
                   TextButton(
-                    onPressed: () { 
+                    onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         widget._crudPricely.create(_list);
